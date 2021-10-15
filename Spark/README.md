@@ -10,6 +10,4 @@
 1. <a href="https://github.com/shuainuo/DATA-WAERHOUSE/blob/main/Spark/Spark%E6%8C%81%E4%B9%85%E5%8C%96.md" target="_blank">Spark持久化</a>
 
 ## 自我反省
-**一篇鬼东西**
-
-<a href="https://github.com/shuainuo/DATA-WAERHOUSE/blob/main/Spark/Spark%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93.md" target="_blank">Spark持久化</a>
+**一篇鬼东西：**<a href="https://github.com/shuainuo/DATA-WAERHOUSE/blob/main/Spark/Spark%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93.md" target="_blank">Spark自我总结</a>
