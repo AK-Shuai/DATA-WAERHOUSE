@@ -275,8 +275,9 @@ val conf = new SparkConf().set("spark.shuffle.io.retryWait", "60s")
 
 当你使用 SortShuffleManager 时，如果的确不需要排序操作，那么建议将这个参数调大一些，大于 shuffle read task 的数量，那么此时 map-side 就不会进行排序了，减少了排序的性能开销，但是这种方式下，依然会产生大量的磁盘文件，因此 shuffle write 性能有待提高。
 
-SortShuffleManager 排序操作阈值的设置可以通过 spark.shuffle.sort. bypassMergeThreshold 这一参数进行设置，默认值为 200
-reduce 端拉取数据等待间隔配置
+SortShuffleManager 排序操作阈值的设置可以通过 spark.shuffle.sort. bypassMergeThreshold 这一参数进行设置，默认值为 200：
+
+reduce 端拉取数据等待间隔配置：
 ```
 val conf = new SparkConf().set("spark.shuffle.sort.bypassMergeThreshold", "400") 
 ```
@@ -295,6 +296,7 @@ val conf = new SparkConf().set("spark.shuffle.sort.bypassMergeThreshold", "400")
 在 Spark UI 中可以查看每个 stage 的运行情况，包括每个 task 的运行时间、gc 时间等等，如果发现 gc 太频繁，时间太长，就可以考虑调节 Storage 的内存占比，让 task 执行算子函数式，有更多的内存可以使用。
 
 Storage 内存区域可以通过 spark.storage.memoryFraction 参数进行指定，默认为 0.6，即 60%，可以逐级向下递减，如代码清单 :
+
 Storage 内存占比设置:
 ```
 val conf = new SparkConf().set("spark.storage.memoryFraction", "0.4")
@@ -330,6 +332,7 @@ Executor 堆外内存配置
 在生产环境下，有时会遇到 file not found、file lost 这类错误，在这种情况下，很有可能是 Executor 的 BlockManager 在拉取数据的时候，无法建立连接，然后超过默认的连接等待时长 60s 后，宣告数据拉取失败，如果反复尝试都拉取不到数据，可能会导致 Spark 作业的崩溃。这种情况也可能会导致 DAGScheduler 反复提交几次 stage，TaskScheduler 反复提交几次 task，大大延长了我们的 Spark 作业的运行时间。
 
 此时，可以考虑调节连接的超时时长，连接等待时长需要在 spark-submit 脚本中进行设置，设置方式如代码清单：
+
 连接等待时长配置：
 ```
 --conf spark.core.connection.ack.wait.timeout=300
