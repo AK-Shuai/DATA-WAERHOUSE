@@ -1,8 +1,18 @@
+- [什么是高可用](#什么是高可用)
+- [Replica备份机制](#Replica备份机制)
+- [ISR机制](#ISR机制)
+- [ACK机制](#ACK机制)
+- [故障恢复机制](#故障恢复机制)
+- [Kafka的复制机制](#Kafka的复制机制)
+- [小结](#小结)
+- [总结](#总结)
+
+# kafka高可用
 ## 什么是高可用
 
 「高可用性」，指系统无间断地执行其功能的能力，代表系统的可用性程度 Kafka从0.8版本开始提供了高可用机制，可保障一个或多个Broker宕机后，其他Broker能继续提供服务。
 
-## Replica（备份机制）
+## Replica备份机制
 - kafka的topic可以设置有n个副本（replica），副本数最好要小于等于broker的数量，也就是要保证一个broker上的replica最多有一个。
 - 创建副本的单位是topic的分区，每个分区有1个leader和0到n-1follower，Kafka把多个replica分为Lerder replica和follower replica。
 
