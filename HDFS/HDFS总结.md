@@ -1,4 +1,4 @@
-# HDFS 面试题集锦
+# HDFS 总结
 
 ## hdfs上跨节点如何数据迁移
 hadoop distcp hdfs://nn1:8020/data hdfs://nn2:8020/
