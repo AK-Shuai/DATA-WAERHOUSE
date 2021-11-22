@@ -28,12 +28,12 @@
 - [26. MySQL中的字符串类型都有哪些](#MySQL中的字符串类型都有哪些)
 - [27. VARCHAR 和 CHAR 的区别是什么？分别适用的场景有哪些？](#VARCHAR-和-CHAR-的区别是什么-分别适用的场景有哪些)
 - [28. MySQL 存储金额应该使用哪种数据类型？为什么？](#MySQL-存储金额应该使用哪种数据类型-为什么)
-- [29. limit 3,2 的含义是什么？](#limit-3,2-的含义是什么)
-- [30. now() 和 current_date() 有什么区别](#now()和current_date()有什么区别)
+- [29. limit 3,2 的含义是什么？](#limit逗号隔开的含义是什么)
+- [30. now() 和 current_date() 有什么区别](#now和current_date有什么区别)
 - [31. 删除表的数据有几种方式？它们有什么区别](#删除表的数据有几种方式-它们有什么区别)
 - [32. MySQL 中支持几种模糊查询?它们有什么区别?](#MySQL-中支持几种模糊查询-它们有什么区别)
 - [33. MySQL 支持枚举吗？如何实现？它的用途是什么?](#MySQL-支持枚举吗-如何实现-它的用途是什么)
-- [34. count字段-和-count*-有什么区别](#count字段和-count*-有什么区别)
+- [34. count(字段) 和count(*)有什么区别](#count字段和-count*-有什么区别)
 - [35. 为什么 InnoDB 不把总条数记录下来 查询的时候直接返回呢](#为什么-InnoDB-不把总条数记录下来-查询的时候直接返回呢)
 - [36. 能否使用 show table status 中的表行数作为表的总行数直接使用？为什么](#能否使用show-table-status-中的表行数作为表的总行数直接使用-为什么)
 - [37. InnoDB 和 MyISAM 执行 select count(*) from t，哪个效率更高？为什么？](#InnoDB-和-MyISAM-执行-select-count-*-from-t-哪个效率更高-为什么)
@@ -179,10 +179,10 @@ VARCHAR 和 CHAR 最大区别就是，VARCHAR 的长度是可变的，而 CHAR �
 ## MySQL 存储金额应该使用哪种数据类型 为什么
 MySQL 存储金额应该使用 decimal ，因为如果存储其他数据类型，比如 float 有导致小数点后数据丢失的风险。
 
-## limit 3,2 的含义是什么
+## limit逗号隔开的含义是什么
 去除前三条数据之后查询两条信息。
 
-## now()和current_date()有什么区别
+## now和current_date有什么区别
 now() 返回当前时间包含日期和时分秒，current_date() 只返回当前时间。
 
 ## 删除表的数据有几种方式 它们有什么区别
