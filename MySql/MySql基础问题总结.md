@@ -37,7 +37,7 @@
 - [35. 为什么 InnoDB 不把总条数记录下来 查询的时候直接返回呢](#为什么-InnoDB-不把总条数记录下来-查询的时候直接返回呢)
 - [36. 能否使用 show table status 中的表行数作为表的总行数直接使用？为什么](#能否使用show-table-status-中的表行数作为表的总行数直接使用-为什么)
 - [37. InnoDB 和 MyISAM 执行 select count(*) from t，哪个效率更高？为什么？](#InnoDB-和-MyISAM-执行-select-count-*-from-t-哪个效率更高-为什么)
-- [38. 在 MySQL 中有对 count(*) 做优化吗？做了哪些优化？](#在MySQL中有对count*做优化吗做了哪些优化)
+- [38. 在 MySQL 中有对 count(*) 做优化吗？做了哪些优化？](#在MySQL中有对count星做优化吗做了哪些优化)
 - [39. 使用delete误删数据怎么找回](#使用delete误删数据怎么找回)
 - [40. Flashback恢复数据的原理是什么](#Flashback恢复数据的原理是什么)
 
@@ -222,7 +222,7 @@ count 在 InnoDB 中是一行一行读取，然后累计计数的。
 ## InnoDB 和 MyISAM 执行 select count * from t 哪个效率更高 为什么
 MyISAM 效率最高，因为 MyISAM 内部维护了一个计数器，直接返回总条数，而 InnoDB 要逐行统计。
 
-## 在MySQL中有对count*做优化吗做了哪些优化
+## 在MySQL中有对count星做优化吗做了哪些优化
 count(*) 在不同的 MySQL 引擎中的实现方式是不相同的，在没有 where 条件的情况下：
 
 - MyISAM 引擎会把表的总行数存储在磁盘上，因此在执行 count(*) 的时候会直接返回这个这个行数，执行效率很高；
