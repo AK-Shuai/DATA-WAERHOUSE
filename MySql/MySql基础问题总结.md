@@ -33,7 +33,7 @@
 - [31. 删除表的数据有几种方式？它们有什么区别](#删除表的数据有几种方式-它们有什么区别)
 - [32. MySQL 中支持几种模糊查询?它们有什么区别?](#MySQL-中支持几种模糊查询-它们有什么区别)
 - [33. MySQL 支持枚举吗？如何实现？它的用途是什么?](#MySQL-支持枚举吗-如何实现-它的用途是什么)
-- [34. count(字段) 和count(*)有什么区别](#count字段和-count*-有什么区别)
+- [34. count(字段) 和count(*)有什么区别](#count字段和-count-*-有什么区别)
 - [35. 为什么 InnoDB 不把总条数记录下来 查询的时候直接返回呢](#为什么-InnoDB-不把总条数记录下来-查询的时候直接返回呢)
 - [36. 能否使用 show table status 中的表行数作为表的总行数直接使用？为什么](#能否使用show-table-status-中的表行数作为表的总行数直接使用-为什么)
 - [37. InnoDB 和 MyISAM 执行 select count(*) from t，哪个效率更高？为什么？](#InnoDB-和-MyISAM-执行-select-count-*-from-t-哪个效率更高-为什么)
@@ -209,7 +209,7 @@ create table t(
 );
 ```
 
-## count字段和-count*-有什么区别
+## count字段和 count * 有什么区别
 count(column) 和 count() 最大区别是统计结果可能不一致，count(column) 统计不会统计列值为 null 的数据，而 count() 则会统计所有信息，所以最终的统计结果可能会不同。
 count 在 InnoDB 中是一行一行读取，然后累计计数的。
 
