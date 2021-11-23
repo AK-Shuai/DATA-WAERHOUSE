@@ -220,7 +220,7 @@ count 在 InnoDB 中是一行一行读取，然后累计计数的。
 不能，因为 show table status 是通过采样统计估算出来的，官方文档说误差可能在 40% 左右，所以 show table status 中的表行数不能直接使用。
 
 ## InnDB和MyISAM执行count一谁的效率高
-**特殊符号题名不能一直**
+**特殊符号题名不能一直**  
 MyISAM 效率最高，因为 MyISAM 内部维护了一个计数器，直接返回总条数，而 InnoDB 要逐行统计。
 
 ## 在MySQL中有对count星做优化吗做了哪些优化
