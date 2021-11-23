@@ -36,7 +36,7 @@
 - [34. count(字段) 和count(*)有什么区别](#count区别)
 - [35. 为什么 InnoDB 不把总条数记录下来 查询的时候直接返回呢](#为什么-InnoDB-不把总条数记录下来-查询的时候直接返回呢)
 - [36. 能否使用 show table status 中的表行数作为表的总行数直接使用？为什么](#能否使用show-table-status-中的表行数作为表的总行数直接使用-为什么)
-- [37. InnoDB 和 MyISAM 执行 select count(*) from t，哪个效率更高？为什么？](#InnoDB-和-MyISAM-执行-select-count-*-from-t-哪个效率更高-为什么)
+- [37. InnoDB 和 MyISAM 执行 select count(*) from t，哪个效率更高？为什么？](#InnDB和MyISAM执行count一谁的效率高)
 - [38. 在 MySQL 中有对 count(*) 做优化吗？做了哪些优化？](#在MySQL中有对count星做优化吗做了哪些优化)
 - [39. 使用delete误删数据怎么找回](#使用delete误删数据怎么找回)
 - [40. Flashback恢复数据的原理是什么](#Flashback恢复数据的原理是什么)
@@ -219,7 +219,8 @@ count 在 InnoDB 中是一行一行读取，然后累计计数的。
 ## 能否使用show table status 中的表行数作为表的总行数直接使用 为什么
 不能，因为 show table status 是通过采样统计估算出来的，官方文档说误差可能在 40% 左右，所以 show table status 中的表行数不能直接使用。
 
-## InnoDB 和 MyISAM 执行 select count * from t 哪个效率更高 为什么
+## InnDB和MyISAM执行count一谁的效率高
+**特殊符号题名不能一直**
 MyISAM 效率最高，因为 MyISAM 内部维护了一个计数器，直接返回总条数，而 InnoDB 要逐行统计。
 
 ## 在MySQL中有对count星做优化吗做了哪些优化
