@@ -44,5 +44,7 @@
 废弃 Hash Shuffle 主要是因为产生文件不可控。
 2. Sort Shuffle 为什么需要排序
 在落盘的情况下，因为文件数的减少会导致 reduce 拉数据无法知道相同 key 在哪文件下，多文件会慢但是 key 会更清晰。
-3. 为什么会有 bypass 机制
+3. sort shuffle bypass机制和 hash shuffle  什么关系
+bypass机制和未优化的 hash shuffle 差不多，区别是做了了磁盘合并，在shuffle read 会节省资源
+4. 为什么会有 bypass 机制
 Sort Shuffle 需要排序，会极大消耗计算能力，而下一个 reduce task 数量小的情况下，采用 bypass 机制，由于不用排序，文件数在可控范围内，极大减少计算时间。
