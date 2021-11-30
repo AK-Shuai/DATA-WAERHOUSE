@@ -48,3 +48,7 @@
 bypass机制和未优化的 hash shuffle 差不多，区别是做了了磁盘合并，在shuffle read 会节省资源
 4. 为什么会有 bypass 机制  
 Sort Shuffle 需要排序，会极大消耗计算能力，而下一个 reduce task 数量小的情况下，采用 bypass 机制，由于不用排序，文件数在可控范围内，极大减少计算时间。
+
+## 参考
+1. <a href="https://cloud.tencent.com/developer/article/1880493" target="_blank">Spark的两种核心Shuffle详解</a>
+
