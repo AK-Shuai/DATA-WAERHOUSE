@@ -5,7 +5,7 @@
 作为一个 JVM 进程，Executor 的内存管理建立在 JVM 的内存管理之上，Spark 对 JVM 的堆内（On-heap）空间进行了更为详细的分配，以充分利用内存。同时，Spark 引入了堆外（Off-heap）内存，使之可以直接在工作节点的系统内存中开辟空间，进一步优化了内存的使用。
 
 堆内内存受到 JVM 统一管理，堆外内存是直接向操作系统进行内存的申请和释放。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Executor%E5%A0%86%E5%86%85%E4%B8%8E%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Executor%E5%A0%86%E5%86%85%E4%B8%8E%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98%E5%9B%BE.jpg" width="400"></div>
 
 ### 堆内内存
 
@@ -43,7 +43,7 @@ Spark 对堆内内存的管理是一种逻辑上的”规划式”的管理，�
 ## 内存空间分配
 ### 静态内存管理
 在 Spark 最初采用的静态内存管理机制下，存储内存、执行内存和其他内存的大小在 Spark 应用程序运行期间均为固定的，但用户可以应用程序启动前进行配置，堆内内存的分配如图： 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E9%9D%99%E6%80%81%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E9%9D%99%E6%80%81%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.jpg" width="400"></div>
 
 可以看到，可用的堆内内存的大小需要按照代码清单 1-1 的方式计算：
 
@@ -58,16 +58,16 @@ Spark 对堆内内存的管理是一种逻辑上的”规划式”的管理，�
 Storage 内存和 Execution 内存都有预留空间，目的是防止 OOM，因为 Spark 堆内内存大小的记录是不准确的，需要留出保险区域。
 
 堆外的空间分配较为简单，只有存储内存和执行内存。可用的执行内存和存储内存占用的空间大小直接由参数 spark.memory.storageFraction 决定，由于堆外内存占用的空间可以被精确计算，所以无需再设定保险区域。 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E9%9D%99%E6%80%81%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E9%9D%99%E6%80%81%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.jpg" width="400"></div>
 
 静态内存管理机制实现起来较为简单，但如果用户不熟悉 Spark 的存储机制，或没有根据具体的数据规模和计算任务或做相应的配置，很容易造成”一半海水，一半火焰”的局面，即存储内存和执行内存中的一方剩余大量的空间，而另一方却早早被占满，不得不淘汰或移出旧的内容以存储新的内容。由于新的内存管理机制的出现，这种方式目前已经很少有开发者使用，出于兼容旧版本的应用程序的目的，Spark 仍然保留了它的实现。
 
 ### 统一内存管理
 
 Spark 1.6 之后引入的统一内存管理机制，与静态内存管理的区别在于存储内存和执行内存共享同一块空间，可以动态占用对方的空闲区域，统一内存管理的堆内内存结构如图
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E7%BB%9F%E4%B8%80%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E2%80%94%E2%80%94%E5%A0%86%E5%86%85%E5%86%85%E5%AD%98.jpg width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E7%BB%9F%E4%B8%80%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E2%80%94%E2%80%94%E5%A0%86%E5%86%85%E5%86%85%E5%AD%98.jpg width="400"></div>
 统一内存管理的堆外内存结构如图
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E7%BB%9F%E4%B8%80%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E2%80%94%E2%80%94%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E7%BB%9F%E4%B8%80%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E2%80%94%E2%80%94%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98.jpg" width="400"></div>
 
 其中最重要的优化在于动态占用机制，其规则如下：
 
@@ -80,7 +80,7 @@ Spark 1.6 之后引入的统一内存管理机制，与静态内存管理的区�
 - 存储内存的空间被对方占用后，无法让对方”归还”，因为需要考虑 Shuffle 过程中的很多因素，实现起来较为复杂。
 
 统一内存管理的动态占用机制如图
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E7%BB%9F%E4%B8%80%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%9A%84%E5%8A%A8%E6%80%81%E5%8D%A0%E7%94%A8%E6%9C%BA%E5%88%B6%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E7%BB%9F%E4%B8%80%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%9A%84%E5%8A%A8%E6%80%81%E5%8D%A0%E7%94%A8%E6%9C%BA%E5%88%B6%E5%9B%BE.jpg" width="400"></div>
 
 凭借统一内存管理机制，Spark 在一定程度上提高了堆内和堆外内存资源的利用率，降低了开发者维护 Spark 内存的难度，但并不意味着开发者可以高枕无忧。如果存储内存的空间太大或者说缓存的数据过多，反而会导致频繁的全量垃圾回收，降低任务执行时的性能，因为缓存的 RDD 数据通常都是长期驻留内存的。所以要想充分发挥 Spark 的性能，需要开发者进一步了解存储内存和执行内存各自的管理方式和实现原理。
 
@@ -97,7 +97,7 @@ RDD 的持久化由 Spark 的 Storage 模块负责，实现了 RDD 与物理存�
 
 Storage 模块在逻辑上以 Block 为基本存储单位，**RDD 的每个 Partition 经过处理后唯一对应一个 Block**（BlockId 的格式为 rddRDD-IDPARTITION-ID ）。Driver 端的 Master 负责整个 Spark 应用程序的 Block 的元数据信息的管理和维护，而 Executor 端的 Slave 需要将 Block 的更新等状态上报到 Master，同时接收 Master 的命令，例如新增或删除一个 RDD。
 Storage 模块示意图：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Storage%E6%A8%A1%E5%9D%97%E7%A4%BA%E6%84%8F%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Storage%E6%A8%A1%E5%9D%97%E7%A4%BA%E6%84%8F%E5%9B%BE.jpg" width="400"></div>
 
 在对 RDD 持久化时，Spark 规定了 MEMORYONLY、MEMORYAND_DISK 等 7 种不同的存储级别 ，而存储级别是以下 5 个变量的组合：
 
@@ -151,7 +151,7 @@ Block 有序列化和非序列化两种存储格式，具体以哪种方式取�
 
 如果最终 Unroll 成功，当前 Partition 所占用的 Unroll 空间被转换为正常的缓存 RDD 的存储空间，如下图所示。 
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Unroll.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Unroll.jpg" width="400"></div>
 
 在静态内存管理时，Spark 在存储内存中专门划分了一块 Unroll 空间，其大小是固定的，统一内存管理时则没有对 Unroll 空间进行特别区分，当存储空间不足时会根据动态占用机制进行处理。
 

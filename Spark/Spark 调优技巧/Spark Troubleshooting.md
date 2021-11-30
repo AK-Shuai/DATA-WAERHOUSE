@@ -58,7 +58,7 @@ val conf = new SparkConf().set("spark.shuffle.io.maxRetries", "60").set("spark.s
 
 YARN-client 模式的运行原理如下图所示：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Client%E6%A8%A1%E5%BC%8F%20.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Client%E6%A8%A1%E5%BC%8F%20.jpg" width="400"></div>
 
 在 YARN-client 模式下，Driver 启动在本地机器上，而 Driver 负责所有的任务调度，需要与 YARN 集群上的多个 Executor 进行频繁的通信。
 
@@ -72,7 +72,7 @@ YARN-client 模式的运行原理如下图所示：
 
 YARN-cluster 模式的运行原理如下图所示：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
 
 当 Spark 作业中包含 SparkSQL 的内容时，可能会碰到 YARN-client 模式下可以运行，但是 YARN-cluster 模式下无法提交运行（报出 OOM 错误）的情况。
 

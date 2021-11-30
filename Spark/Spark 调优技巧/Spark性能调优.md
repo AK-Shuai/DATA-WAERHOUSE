@@ -202,7 +202,7 @@ mapPartitions 算子也存在一些缺点：对于普通的 map 操作，一次�
 如果使用 foreach 算子完成数据库的操作，由于 foreach 算子是遍历 RDD 的每条数据，因此，每条数据都会建立一个数据库连接，这是对资源的极大浪费，因此，对于写数据库操作，我们应当使用 foreachPartition 算子。
 
 与 mapPartitions 算子非常相似，foreachPartition 是将 RDD 的每个分区作为遍历对象，一次处理一个分区的数据，也就是说，如果涉及数据库的相关操作，一个分区的数据只需要创建一次数据库连接，如图
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/foreachPartition%E7%AE%97%E5%AD%90.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/foreachPartition%E7%AE%97%E5%AD%90.jpg" width="400"></div>
 
 使用了 foreachPartition 算子后，可以获得以下的性能提升：
 
@@ -218,7 +218,7 @@ mapPartitions 算子也存在一些缺点：对于普通的 map 操作，一次�
 
 在 Spark 任务中我们经常会使用 filter 算子完成 RDD 中数据的过滤，在任务初始阶段，从各个分区中加载到的数据量是相近的，但是一旦进过 filter 过滤后，每个分区的数据量有可能会存在较大差异，如图
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E5%88%86%E5%8C%BA%E6%95%B0%E6%8D%AE%E8%BF%87%E6%BB%A4%E7%BB%93%E6%9E%9C%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E5%88%86%E5%8C%BA%E6%95%B0%E6%8D%AE%E8%BF%87%E6%BB%A4%E7%BB%93%E6%9E%9C%E5%9B%BE.jpg" width="400"></div>
 
 我们可以发现两个问题：
 

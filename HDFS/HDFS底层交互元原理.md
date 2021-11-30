@@ -9,7 +9,7 @@ ZKFC、JournalNode、读写、安全模式
 
 表格的数据很重要，如果丢了管理员就会手足无措了，所以我们将表格再备份一份（Standby NameNode）放在抽屉里，每次数据修改都将数据同步到备份的表格处（JournalNode），如果主表格丢失了，监控（ZKFC）发现后保安（Zookeeper）立马把备份表格拿出来使用。
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png" width="400"></div>
 
 HDFS 进程还是比较多的，每个进程有各自的职责，然后按照既定的规则与其他进程交互，目的是维持系统正常稳定地运行。
 
@@ -56,7 +56,7 @@ HDFS 进程还是比较多的，每个进程有各自的职责，然后按照既
 名词解释：
  - DistributedFileSystem 就是HDFS的客户端API
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E5%86%99%E6%95%B0%E6%8D%AE%E6%B5%81%E7%A8%8B%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E5%86%99%E6%95%B0%E6%8D%AE%E6%B5%81%E7%A8%8B%E5%9B%BE.png" width="400"></div>
 
 1. 首先 client 端通过在 DistributedFileSystem 上调用 create() 方法来创建一个文件。其中，DistributedFileSystem 是客户端用户创建的一个对象，用户可以通过调用 DistributedFileSystem 的方法来对 HDFS 做读写操作。
 2. 在收到 client 端 create 动作之后，DistributedFileSystem 通过 RPC 与 NameNode 通信 ，让它在文件系统的 namespace 上创建一个独立的新文件，NameNode 会确认文件是否已经存在以及客户端是否有权限。确认成功后，NameNode 会生成一条新文件的记录并返回一个负责 client 端与 datanode 和 namenode 进行 I/O 操作的 DFSOutputStream 对象给客户端，另外还会包含可写入的 DataNode 的信息。如文件创建失败，客户端会抛出一个 IOException。
@@ -72,7 +72,7 @@ HDFS 进程还是比较多的，每个进程有各自的职责，然后按照既
 
 读数据流程：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E8%AF%BB%E6%95%B0%E6%8D%AE%E6%B5%81%E7%A8%8B%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E8%AF%BB%E6%95%B0%E6%8D%AE%E6%B5%81%E7%A8%8B%E5%9B%BE.png" width="400"></div>
 
 1. 与写流程类似，第一步 Client 端同样是调用 DistributedFileSystem 对象，指定想要读的文件 target.txt ，使用 open() 方法。
 2. 此时 DistributedFileSystem 就会与 NameNode 进行 RPC 通信，获取组成 target.txt 的 block 信息，其中包含** block 存在于哪些 DataNode 中**。

@@ -37,12 +37,12 @@ Standalone 集群有四个重要组成部分，分别是：
 4) Executor：是一个进程，一个 Worker 上可以运行多个 Executor，Executor 通过启动多个线程（task）来执行对 RDD 的 partition 进行并行计算，也就是执行我们对 RDD 定义的例如 map、flatMap、reduce 等算子操作。
 
 ### Standalone Client 模式
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Standalone_Client%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Standalone_Client%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
 
 在 Standalone Client 模式下，Driver 在任务提交的本地机器上运行，Driver 启动后向 Master 注册应用程序，Master 根据 submit 脚本的资源需求找到内部资源至少可以启动一个 Executor 的所有 Worker ，然后在这些 Worker 之间分配 Executor，Worker 上的 Executor 启动后会向 Driver 反向注册，所有的 Executor 注册完成后，Driver 开始执行 main 函数，之后执行到 Action 算子时，开始划分 stage ，每个 stage 生成对应的 taskSet，之后将 task 分发到各个 Executor 上执行。
 
 ### Standalone Cluster 模式
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Standalone_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Standalone_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
 
 在 Standalone Cluster 模式下，任务提交后，Master 会找到一个 Worker 启动 Driver 进程， Driver 启动后向 Master 注册应用程序，Master 根据 submit 脚本的资源需求找到内部资源至少可以启动一个 Executor 的所有 Worker，然后在这些 Worker 之间分配 Executor，Worker 上的 Executor 启动后会向 Driver 反向注册，所有的 Executor 注册完成后，Driver 开始执行 main 函数，之后执行到 Action 算子时，开始划分 stage，每个 stage 生成对应的 taskSet，之后将 task 分发到各个 Executor 上执行。  
 
@@ -50,14 +50,14 @@ Standalone 集群有四个重要组成部分，分别是：
 
 ## YARN 模式运行机制
 ### YARN Client 模式
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Client%E6%A8%A1%E5%BC%8F%20.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Client%E6%A8%A1%E5%BC%8F%20.jpg" width="400"></div>
 
 在 YARN Client 模式下，Driver 在任务提交的本地机器上运行，Driver 启动后会和 ResourceManager 通讯申请启动 ApplicationMaster，随后 ResourceManager 分配 container ，在合适的 NodeManager 上启动 ApplicationMaster ，此时的 ApplicationMaster 的功能相当于一个 ExecutorLaucher ，只负责向 ResourceManager 申请 Executor 内存。
 
 ResourceManager 接到 ApplicationMaster 的资源申请后会分配 container ，然后 ApplicationMaster 在资源分配指定的 NodeManager 上启动 Executor 进程，Executor 进程启动后会向 Driver 反向注册，Executor 全部注册完成后 Driver 开始执行 main 函数，之后执行到 Action 算子时，触发一个 job，并根据宽依赖开始划分 stage，每个 stage 生成对应的 taskSet，之后将 task 分发到各个 Executor 上执行。
 
 ### YARN Cluster 模式
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
 
 在 YARN Cluster 模式下，任务提交后会和 ResourceManager 通讯申请启动 ApplicationMaster，随后 ResourceManager 分配 container，在合适的 NodeManager 上启动 ApplicationMaster，此时的 ApplicationMaster 就是 Driver。
 

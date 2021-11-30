@@ -1,6 +1,6 @@
 ## 重点 调度流程、调度器的类别、调度策略
 ### 关键概念和角色和资源调度流程
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Yarn%E8%B5%84%E6%BA%90%E8%B0%83%E5%BA%A6%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Yarn%E8%B5%84%E6%BA%90%E8%B0%83%E5%BA%A6%E5%9B%BE.png" width="400"></div>
 
 ### ResourceManager
 ResourceManager内部主要有两个组件：Scheduler和ApplicationManager。
@@ -42,7 +42,7 @@ FIFO Scheduler 是最基础的调度方式，由于调度逻辑过于简单粗�
 为了解决 FIFOScheduler 在多任务场景下效率低的问题，CapacityScheduler 将资源按照比例分为多个队列，每个队列拥有独立的资源（CPU、Mem），每个队列还可以进一步划分成层次结构（Hierarchical Queues），如下图所示。CapacityScheduler 可以支持用户通过指定执行队列来提交应用程序，以此避免资源被其他的应用完全占用而造成阻塞的情况，队列有如下特性：
 - 在每个队列内部，按照 FIFO 方式调度应用程序。
 - 资源共享，当某个队列的资源空闲时，可以将它的剩余资源共享给其他队列。
- <div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Capacity_Scheduler%E5%9B%BE.png" width="400"></div>
+ <div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Capacity_Scheduler%E5%9B%BE.png" width="400"></div>
 
 ### Fair Scheduler
 
@@ -61,7 +61,7 @@ FairScheduler 中的资源分配有两个比较重要的配置需要说明下：
 #### 调度器为空闲节点选择 Container 的策略？
 
 当服务器节点出现空闲资源时，调度器会在该节点上启动新的 Container 来跑应用，但是集群中有那么多队列，队列下有那么多应用，应用又对应了那么多 Container，调度器是如何为这个空闲节点来选择应该启动哪个 Container 的呢？
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Container%E7%AD%96%E7%95%A5%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Container%E7%AD%96%E7%95%A5%E5%9B%BE.png" width="400"></div>
 
 Capacity Scheduler 和 Fair Scheduler 类似都采用了三级资源分配策略，依次选择队列、应用程序和 Container，如上图所示：  
 - 选择资源队列，因为队列是个树形结构，所以需要从根队列开始遍历子队列，按照它的子队列资源使用率由小到大依次遍历，找出资源使用率最小的子队列（已使用的资源量/最小队列资源容量），优先为这个队列下的应用分配资源。

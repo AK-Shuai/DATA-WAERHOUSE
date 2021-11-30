@@ -47,7 +47,7 @@ OOM的问题通常出现在execution这块内存中，因为storage这块内存�
 
    这个比较特殊，这里说记录一下，遇到过一种情况，类似这样rdd.flatMap(x=>for(i <- 1 to 1000) yield ("key","value"))导致OOM，但是在同样的情况下，使用rdd.flatMap(x=>for(i <- 1 to 1000) yield "key"+"value")就不会有OOM的问题，这是因为每次("key","value")都产生一个Tuple对象，而"key"+"value"，不管多少个，都只有一个对象，指向常量池。具体测试如下：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E5%85%B1%E7%94%A8%E5%AF%B9%E8%B1%A1%E5%87%8F%E5%B0%91oom.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E5%85%B1%E7%94%A8%E5%AF%B9%E8%B1%A1%E5%87%8F%E5%B0%91oom.png" width="400"></div>
 
    这个例子说明("key","value")和("key","value")在内存中是存在不同位置的,也就是存了两份,但是"key"+"value"虽然出现了两次,但是只存了一份,在同一个地址,这用到了JVM常量池的知识.于是乎,如果RDD中有大量的重复数据,或者Array中需要存大量重复数据的时候我们都可以将重复数据转化为String,能够有效的减少内存使用.
 
@@ -75,7 +75,7 @@ OOM的问题通常出现在execution这块内存中，因为storage这块内存�
 
    这个操作在Map-Reduce中也有，这里举个例子：rdd.groupByKey().mapValue(_.sum)比rdd.reduceByKey的效率低，原因如下两幅图所示：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/reducebykey.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/reducebykey.jpg" width="400"></div>
 
    上下两幅图的区别就是上面那幅有combineByKey的过程减少了shuffle的数据量，下面的没有。combineByKey是key-value型rdd自带的API，可以直接使用。
 

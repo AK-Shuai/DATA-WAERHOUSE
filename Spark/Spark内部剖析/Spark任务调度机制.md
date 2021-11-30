@@ -3,10 +3,10 @@
 ## Spark 任务提交流程
 
 Spark YARN-Cluster 模式下的任务提交流程，如下图所示：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_YARN_Cluster%E6%A8%A1%E5%BC%8F.jpg" width="400"></div>
 
 下面的时序图清晰地说明了一个 Spark 应用程序从提交到运行的完整流程：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%20%E4%BB%BB%E5%8A%A1%E6%8F%90%E4%BA%A4%E6%97%B6%E5%BA%8F%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%20%E4%BB%BB%E5%8A%A1%E6%8F%90%E4%BA%A4%E6%97%B6%E5%BA%8F%E5%9B%BE.png" width="400"></div>
 
 提交一个 Spark 应用程序，首先通过 Client 向 ResourceManager 请求启动一个 Application，同时检查是否有足够的资源满足 Application 的需求，如果资源条件满足，则准备 ApplicationMaster 的启动上下文，交给 ResourceManager，并循环监控 Application 状态。
 
@@ -26,24 +26,24 @@ Driver 线程主要是初始化 SparkContext 对象，准备运行所需的上�
 - Task 是 Stage 的子集，以并行度(分区数)来衡量，分区数是多少，则有多少个 task。   
 
 Spark 的任务调度总体来说分两路进行，一路是 Stage 级的调度，一路是 Task 级的调度，总体调度流程如下图所示：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6.png" width="400"></div>
 
 Spark RDD 通过其 Transactions 操作，形成了 RDD 血缘关系图，即 DAG，最后通过 Action 的调用，触发 Job 并调度执行。DAGScheduler 负责 Stage 级的调度，主要是将 job 切分成若干 Stages，并将每个 Stage 打包成 TaskSet 交给 TaskScheduler 调度。TaskScheduler 负责 Task 级的调度，将 DAGScheduler 给过来的 TaskSet 按照指定的调度策略分发到 Executor 上执行，调度过程中 SchedulerBackend 负责提供可用资源，其中 SchedulerBackend 有多种实现，分别对接不同的资源管理系统。有了上述感性的认识后，下面这张图描述了 Spark-On-Yarn 模式下在任务调度期间，ApplicationMaster、Driver 以及 Executor 内部模块的交互过程：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Executor%E5%86%85%E9%83%A8%E6%A8%A1%E5%9D%97%E4%BA%A4%E4%BA%92.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Executor%E5%86%85%E9%83%A8%E6%A8%A1%E5%9D%97%E4%BA%A4%E4%BA%92.png" width="400"></div>
 
 模块交互过程
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E6%A8%A1%E5%9D%97%E4%BA%A4%E4%BA%92%E8%BF%87%E7%A8%8B.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E6%A8%A1%E5%9D%97%E4%BA%A4%E4%BA%92%E8%BF%87%E7%A8%8B.png" width="400"></div>
 Job 提交和 Task 拆分
 
 Driver 初始化 SparkContext 过程中，会分别初始化 DAGScheduler、TaskScheduler、SchedulerBackend 以及 HeartbeatReceiver，并启动 SchedulerBackend 以及 HeartbeatReceiver。SchedulerBackend 通过 ApplicationMaster 申请资源，并不断从 TaskScheduler 中拿到合适的 Task 分发到 Executor 执行。HeartbeatReceiver 负责接收 Executor 的心跳信息，监控 Executor 的存活状况，并通知到 TaskScheduler。
 
 ##  Spark Stage 级调度
 Spark 的任务调度是从 DAG 切割开始，主要是由 DAGScheduler 来完成。当遇到一个 Action 操作后就会触发一个 Job 的计算，并交给 DAGScheduler 来提交，下图是涉及到 Job 提交的相关方法调用流程图。 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Job%E6%8F%90%E4%BA%A4%E8%B0%83%E7%94%A8%E6%A0%88.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Job%E6%8F%90%E4%BA%A4%E8%B0%83%E7%94%A8%E6%A0%88.png" width="400"></div>
 
 Job 由最终的 RDD 和 Action 方法封装而成，SparkContext 将 Job 交给 DAGScheduler 提交，它会根据 RDD 的血缘关系构成的 DAG 进行切分，将一个 Job 划分为若干 Stages，具体划分策略是，由最终的 RDD 不断通过依赖回溯判断父依赖是否是宽依赖，即以 Shuffle 为界，划分 Stage，窄依赖的 RDD 之间被划分到同一个 Stage 中，可以进行 pipeline 式的计算，如上图紫色流程部分。划分的 Stages 分两类，一类叫做 ResultStage，为 DAG 最下游的 Stage，由 Action 方法决定，另一类叫做 ShuffleMapStage，为下游 Stage 准备数据，下面看一个简单的例子
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_WordCount%E4%BE%8B%E5%AD%90%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_WordCount%E4%BE%8B%E5%AD%90%E5%9B%BE.png" width="400"></div>
 
 Job 由 saveAsTextFile 触发，该 Job 由 RDD-3 和 saveAsTextFile 方法组成，根据 RDD 之间的依赖关系从 RDD-3 开始回溯搜索，直到没有依赖的 RDD-0，在回溯搜索过程中，RDD-3 依赖 RDD-2，并且是宽依赖，所以在 RDD-2 和 RDD-3 之间划分 Stage，RDD-3 被划到最后一个 Stage，即 ResultStage 中，RDD-2 依赖 RDD-1，RDD-1 依赖 RDD-0，这些依赖都是窄依赖，所以将 RDD-0、RDD-1 和 RDD-2 划分到同一个 Stage，即 ShuffleMapStage 中，实际执行的时候，数据记录会一气呵成地执行 RDD-0 到 RDD-2 的转化。不难看出，其本质上是一个深度优先搜索算法。
 
@@ -53,14 +53,14 @@ Job 由 saveAsTextFile 触发，该 Job 由 RDD-3 和 saveAsTextFile 方法组�
 
 ## Spark Task 级调度
 Spark Task 的调度是由 TaskScheduler 来完成，由前文可知，DAGScheduler 将 Stage 打包到 TaskSet 交给 TaskScheduler，TaskScheduler 会将 TaskSet 封装为 TaskSetManager 加入到调度队列中，TaskSetManager 结构如下图所示。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/TaskSetManager%E7%BB%93%E6%9E%84%E5%9B%BE.jpg" width="200"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/TaskSetManager%E7%BB%93%E6%9E%84%E5%9B%BE.jpg" width="200"></div>
 
 TaskSetManager 负责监控管理同一个 Stage 中的 Tasks，TaskScheduler 就是以 TaskSetManager为单元来调度任务。
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/TaskManager%E7%BB%93%E6%9E%84.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/TaskManager%E7%BB%93%E6%9E%84.png" width="400"></div>
 
 前面也提到，TaskScheduler 初始化后会启动 SchedulerBackend，它负责跟外界打交道，接收 Executor 的注册信息，并维护 Executor 的状态，所以说 SchedulerBackend 是管“粮食”的，同时它在启动后会定期地去“询问”TaskScheduler 有没有任务要运行，也就是说，它会定期地“问”TaskScheduler“我有这么余量，你要不要啊”，TaskScheduler 在 SchedulerBackend“问”它的时候，会从调度队列中按照指定的调度策略选择 TaskSetManager 去调度运行，大致方法调用流程如下图所示：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/task%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B%E6%B5%81%E7%A8%8B.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/task%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B%E6%B5%81%E7%A8%8B.png" width="400"></div>
 
 将 TaskSetManager 加入 rootPool 调度池中之后，调用 SchedulerBackend 的 riviveOffers 方法给 driverEndpoint 发送 ReviveOffer 消息；driverEndpoint 收到 ReviveOffer 消息后调用 makeOffers 方法，过滤出活跃状态的 Executor（这些 Executor 都是任务启动时反向注册到 Driver 的 Executor），然后将 Executor 封装成 WorkerOffer 对象；准备好计算资源（WorkerOffer）后，taskScheduler 基于这些资源调用 resourceOffer 在 Executor 上分配 task。
 ### 调度策略
@@ -68,18 +68,18 @@ TaskSetManager 负责监控管理同一个 Stage 中的 Tasks，TaskScheduler �
 前面讲到，TaskScheduler 会先把 DAGScheduler 给过来的 TaskSet 封装成 TaskSetManager 扔到任务队列里，然后再从任务队列里按照一定的规则把它们取出来在 SchedulerBackend 给过来的 Executor 上运行。这个调度过程实际上还是比较粗粒度的，是面向 TaskSetManager 的。
 
 TaskScheduler 是以树的方式来管理任务队列，树中的节点类型为 Schdulable，叶子节点为 TaskSetManager，非叶子节点为 Pool，下图是它们之间的继承关系。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_task%E8%B0%83%E5%BA%A6%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png" width="200"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_task%E8%B0%83%E5%BA%A6%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png" width="200"></div>
 
 TaskScheduler 支持两种调度策略，一种是 FIFO，也是默认的调度策略，另一种是 FAIR。在 TaskScheduler 初始化过程中会实例化 rootPool，表示树的根节点，是 Pool 类型。
 
 #### FIFO 调度策略
 如果是采用 FIFO 调度策略，则直接简单地将 TaskSetManager 按照先来先到的方式入队，出队时直接拿出最先进队的 TaskSetManager，其树结构如下图所示，TaskSetManager 保存在一个 FIFO 队列中。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_FIFO%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_FIFO%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84.jpg" width="400"></div>
 
 #### FAIR 调度策略
 FAIR 调度策略的树结构如下图所示：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_FAIR%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_FAIR%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84.jpg" width="400"></div>
 FAIR 模式中有一个 rootPool 和多个子 Pool，各个子 Pool 中存储着所有待分配的 TaskSetMagager。
 
 在 FAIR 模式中，需要先对子 Pool 进行排序，再对子 Pool 里面的 TaskSetMagager 进行排序，因为 Pool 和 TaskSetMagager 都继承了 Schedulable 特质，因此使用相同的排序算法。
@@ -122,6 +122,6 @@ ANY 	|task 和数据可以在集群的任何地方，而且不在一个机架中
 ### 失败重试与黑名单机制
 除了选择合适的 Task 调度运行外，还需要监控 Task 的执行状态，前面也提到，与外部打交道的是 SchedulerBackend，Task 被提交到 Executor 启动执行后，Executor 会将执行状态上报给 SchedulerBackend，SchedulerBackend 则告诉 TaskScheduler，TaskScheduler 找到该 Task 对应的 TaskSetManager，并通知到该 TaskSetManager，这样 TaskSetManager 就知道 Task 的失败与成功状态，对于失败的 Task，会记录它失败的次数，如果失败次数还没有超过最大重试次数，那么就把它放回待调度的 Task 池子中，否则整个 Application 失败。
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Executor%E5%86%85%E9%83%A8%E6%A8%A1%E5%9D%97%E4%BA%A4%E4%BA%92.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark_Executor%E5%86%85%E9%83%A8%E6%A8%A1%E5%9D%97%E4%BA%A4%E4%BA%92.png" width="400"></div>
 
 在记录 Task 失败次数过程中，会记录它上一次失败所在的 Executor Id 和 Host，这样下次再调度这个 Task 时，会使用黑名单机制，避免它被调度到上一次失败的节点上，起到一定的容错作用。黑名单记录 Task 上一次失败所在的 Executor Id 和 Host，以及其对应的“拉黑”时间，“拉黑”时间是指这段时间内不要再往这个节点上调度这个 Task 了。

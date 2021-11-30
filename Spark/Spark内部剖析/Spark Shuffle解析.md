@@ -1,7 +1,7 @@
 # Spark Shuffle 解析
 ## Shuffle 的核心要点
 ### ShuffleMapStage 与 ResultStage
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/ShuffleMapStage%E4%B8%8EResultStage%E7%BB%93%E6%9E%84.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/ShuffleMapStage%E4%B8%8EResultStage%E7%BB%93%E6%9E%84.png" width="400"></div>
 
 划分 stage 时，最后一个 stage 称为 finalStage，它本质上是一个 ResultStage 对象，前面的所有 stage 被称为 ShuffleMapStage。
 
@@ -18,7 +18,7 @@ ResultStage 基本上对应代码中的 action 算子，即将一个函数应用
 
 reduce 端的 stage 默认取 spark.default.parallelism 这个配置项的值作为分区数，如果没有配置，则以 map 端的最后一个 RDD 的分区数作为其分区数（也就是 N），那么分区数就决定了 reduce 端的 task 的个数。
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/spark.default.parallelism%E5%8F%82%E6%95%B0%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/spark.default.parallelism%E5%8F%82%E6%95%B0%E5%9B%BE.jpg" width="400"></div>
 
 ### reduce 端数据的读取
 
@@ -48,7 +48,7 @@ shuffle read 的拉取过程是一边拉取一边进行聚合的。每个 shuffl
 
 未优化的 HashShuffleManager 工作原理如图
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E6%9C%AA%E4%BC%98%E5%8C%96%E7%9A%84HashShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E6%9C%AA%E4%BC%98%E5%8C%96%E7%9A%84HashShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.jpg" width="400"></div>
 
 ### 优化后的 HashShuffleManager
 为了优化 HashShuffleManager 我们可以设置一个参数，spark.shuffle. consolidateFiles，该参数默认值为 false，将其设置为 true 即可开启优化机制，通常来说，如果我们使用 HashShuffleManager，那么都建议开启这个选项。
@@ -60,7 +60,7 @@ shuffle read 的拉取过程是一边拉取一边进行聚合的。每个 shuffl
 假设第二个 stage 有 100 个 task，第一个 stage 有 50 个 task，总共还是有 10 个 Executor（Executor CPU 个数为 1），每个 Executor 执行 5 个 task。那么原本使用未经优化的 HashShuffleManager 时，每个 Executor 会产生 500 个磁盘文件，所有 Executor 会产生 5000 个磁盘文件的。但是此时经过优化之后，每个 Executor 创建的磁盘文件的数量的计算公式为：CPU core 的数量 * 下一个 stage 的 task 数量，也就是说，每个 Executor 此时只会创建 100 个磁盘文件，所有 Executor 只会创建 1000 个磁盘文件。
 
 优化后的 HashShuffleManager 工作原理如图
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E4%BC%98%E5%8C%96%E5%90%8E%E7%9A%84HashShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E4%BC%98%E5%8C%96%E5%90%8E%E7%9A%84HashShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.jpg" width="400"></div>
 
 ## SortShuffle 解析  
 SortShuffleManager 的运行机制主要分成两种，一种是普通运行机制，另一种是 bypass 运行机制。当 shuffle read task 的数量小于等于 spark.shuffle.sort. bypassMergeThreshold 参数的值时（默认为 200），就会启用 bypass 机制。
@@ -74,7 +74,7 @@ SortShuffleManager 的运行机制主要分成两种，一种是普通运行机�
 SortShuffleManager 由于有一个磁盘文件 merge 的过程，因此大大减少了文件数量。比如第一个 stage 有 50 个 task，总共有 10 个 Executor，每个 Executor 执行 5 个 task，而第二个 stage 有 100 个 task。由于每个 task 最终只有一个磁盘文件，因此此时每个 Executor 上只有 5 个磁盘文件，所有 Executor 只有 50 个磁盘文件。
 
 普通运行机制的 SortShuffleManager 工作原理如图
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E6%99%AE%E9%80%9A%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E7%9A%84SortShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E6%99%AE%E9%80%9A%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E7%9A%84SortShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.jpg" width="400"></div>
 
 ### bypass 运行机制
 
@@ -91,4 +91,4 @@ bypass 运行机制的触发条件如下：
 
 bypass 运行机制的 SortShuffleManager 工作原理如图
  
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/bypass%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E7%9A%84SortShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/bypass%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E7%9A%84SortShuffleManager%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.jpg" width="400"></div>

@@ -34,7 +34,7 @@ SparkConf conf = new SparkConf();
 ## persist：
 可以指定持久化的级别。最常用的是MEMORY_ONLY和MEMORY_AND_DISK。”_2”表示有副本数。
 持久化级别如下：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/persist.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/persist.png" width="400"></div>
 
 
 ### cache和persist的注意事项：

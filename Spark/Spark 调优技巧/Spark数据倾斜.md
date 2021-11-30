@@ -66,7 +66,7 @@ Spark 中的数据倾斜问题主要指 shuffle 过程中出现的数据倾斜�
 
 当使用了类似于 groupByKey、reduceByKey 这样的算子时，可以考虑使用随机 key 实现双重聚合
 
-<div align=center><img src="https://github.com/shuainuo/DATA-WAERHOUSE/blob/main/%E5%9B%BE%E5%BA%8A/%E5%8F%8C%E9%87%8D%E8%81%9A%E5%90%88%E5%9B%BE.jpg?raw=true" width="400"></div>
+<div align=center><img src="https://github.com/AK-Shuai/DATA-WAERHOUSE/blob/main/%E5%9B%BE%E5%BA%8A/%E5%8F%8C%E9%87%8D%E8%81%9A%E5%90%88%E5%9B%BE.jpg?raw=true" width="400"></div>
 随机 key 实现双重聚合
 
 首先，通过 map 算子给每个数据的 key 添加随机数前缀，对 key 进行打散，将原先一样的 key 变成不一样的 key，然后进行第一次聚合，这样就可以让原本被一个 task 处理的数据分散到多个 task 上去做局部聚合；随后，去除掉每个 key 的前缀，再次进行聚合。
@@ -78,7 +78,7 @@ Spark 中的数据倾斜问题主要指 shuffle 过程中出现的数据倾斜�
 ## 解决方案五：将 reduce join 转换为 map join
 正常情况下，join 操作都会执行 shuffle 过程，并且执行的是 reduce join，也就是先将所有相同的 key 和对应的 value 汇聚到一个 reduce task 中，然后再进行 join。普通 join 的过程如下图所示
 
-<div align=center><img src="https://github.com/shuainuo/DATA-WAERHOUSE/blob/main/%E5%9B%BE%E5%BA%8A/%E6%99%AE%E9%80%9Ajoin%E7%9A%84%E8%BF%87%E7%A8%8B.jpg?raw=true" width="400"></div>
+<div align=center><img src="https://github.com/AK-Shuai/DATA-WAERHOUSE/blob/main/%E5%9B%BE%E5%BA%8A/%E6%99%AE%E9%80%9Ajoin%E7%9A%84%E8%BF%87%E7%A8%8B.jpg?raw=true" width="400"></div>
 
 普通的 join 是会走 shuffle 过程的，而一旦 shuffle，就相当于会将相同 key 的数据拉取到一个 shuffle read task 中再进行 join，此时就是 reduce join。但是如果一个 RDD 是比较小的，则可以采用广播小 RDD 全量数据+map 算子来实现与 join 同样的效果，也就是 map join，此时就不会发生 shuffle 操作，也就不会发生数据倾斜。
 
@@ -94,7 +94,7 @@ Spark 中的数据倾斜问题主要指 shuffle 过程中出现的数据倾斜�
 
    map join 过程：
 
-   <div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/map%20join%20%E8%BF%87%E7%A8%8B.jpg" width="400"></div>
+   <div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/map%20join%20%E8%BF%87%E7%A8%8B.jpg" width="400"></div>
 
 2.不适用场景分析：
 
@@ -106,7 +106,7 @@ Spark 中的数据倾斜问题主要指 shuffle 过程中出现的数据倾斜�
 
 当由单个 key 导致数据倾斜时，可有将发生数据倾斜的 key 单独提取出来，组成一个 RDD，然后用这个原本会导致倾斜的 key 组成的 RDD 根其他 RDD 单独 join，此时，根据 Spark 的运行机制，此 RDD 中的数据会在 shuffle 阶段被分散到多个 task 中去进行 join 操作。倾斜 key 单独 join 的流程如图
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E5%80%BE%E6%96%9Ckey%E5%8D%95%E7%8B%ACjoin%E7%9A%84%E6%B5%81%E7%A8%8B%E5%A6%82%E5%9B%BE.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E5%80%BE%E6%96%9Ckey%E5%8D%95%E7%8B%ACjoin%E7%9A%84%E6%B5%81%E7%A8%8B%E5%A6%82%E5%9B%BE.jpg" width="400"></div>
 
 
 1. 适用场景分析：
@@ -136,7 +136,7 @@ Spark 中的数据倾斜问题主要指 shuffle 过程中出现的数据倾斜�
 
 使用随机数以及扩容进行 join：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E4%BD%BF%E7%94%A8%E9%9A%8F%E6%9C%BA%E6%95%B0%E4%BB%A5%E5%8F%8A%E6%89%A9%E5%AE%B9%E8%BF%9B%E8%A1%8Cjoin.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/%E4%BD%BF%E7%94%A8%E9%9A%8F%E6%9C%BA%E6%95%B0%E4%BB%A5%E5%8F%8A%E6%89%A9%E5%AE%B9%E8%BF%9B%E8%A1%8Cjoin.jpg" width="400"></div>
 
 
 1. 局限性：

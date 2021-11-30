@@ -4,7 +4,7 @@
 
 ## 读写异常场景下 HDFS 的容错机制
 HDFS 就像是一台精良的机器，为了保证用户体验，它不允许在用户操作的过程中出现任何的差错，所以，它在设计实现的时候就对各种异常场景做了周全的考虑，如何发现问题，如何满足用户需求的同时保证系统一致性，如何解决问题等等，下面我们来细看。 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E8%AF%BB%E5%86%99%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E8%AF%BB%E5%86%99%E5%9B%BE.png" width="400"></div>
 
 ### 写失败场景的处理流程？
 
@@ -37,7 +37,7 @@ HDFS 就像是一台精良的机器，为了保证用户体验，它不允许在
 
 互联网公司的 Hadoop 集群一般都会比较大，几百台服务器会分布在不同的机架上，甚至在不同的机房。出于保证数据安全性和数据传输的高效性的平衡考虑，HDFS希望不同节点之间的通信能够尽量发生在同一个机架之内，而不是跨机架和跨机房。同时，NameNode 在分配 Block 的存储位置的时候，会尽可能把数据块的副本放到多个机架甚至机房中，防止机架出现事故或者机房出现事故时候的数据丢失问题发生。
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E6%9C%BA%E6%9E%B6%E6%84%9F%E7%9F%A5%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E6%9C%BA%E6%9E%B6%E6%84%9F%E7%9F%A5%E5%9B%BE.png" width="400"></div>
 
 这就是 HDFS 的机架感知，首先机房和机架的信息是需要用户自己配置的，HDFS 没法做到自动感知，然后根据配置的信息，NameNode 会有如下的副本放置策略。
 
@@ -69,7 +69,7 @@ HDFS 就像是一台精良的机器，为了保证用户体验，它不允许在
 ## 短路读机制 Short Circuit Local Reads
 
 上一篇已经提到了 HDFS 读取数据的时候 Client 端是需要和 DataNode 进行交互，由 DataNode 返回数据，这似乎是一个常规的流程，但是如果数据和 Client 在同一台服务器，仍然需要通过 TCP 套接字连接到 DataNode，然后进行数据传输的话，就会显得没有那么高效了。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E7%9F%AD%E8%B7%AF%E8%AF%BB%E5%8F%96%E6%9C%BA%E5%88%B6.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/HDFS%E7%9F%AD%E8%B7%AF%E8%AF%BB%E5%8F%96%E6%9C%BA%E5%88%B6.png" width="400"></div>
 
 短路读机制使 Client 端和目标 DataNode 在同一台服务器时，可以直接从本地磁盘读取数据，不需要通过 DataNode 中转数据。为了解决权限的问题，HDFS 采用了 Unix 的一种机制：文件描述符传递。如图，DFSClient 发起读请求后，DataNode 不是将数据目录传递给 DFSClient，而是打开块文件和元数据文件，并将它们的文件描述符传递给 DFSClient，DFSClient 再根据文件描述符直接从磁盘读取数据。
 

@@ -2,7 +2,7 @@
 Spark 的相关概念我们整理清楚了，接下来就是让 Spark “跑起来”，让我们看看它是怎么运行的，包括它的任务提交和执行流程，执行过程中的内存管理机制，以及 SparkSQL 的执行和优化。掌握执行流程相关的内容对 Spark 任务的 debug 和优化有很大帮助，可以帮助我们迅速定位到哪个执行的环节出了问题，或者哪里出现了瓶颈，解决此类问题通常是大数据工程师的日常工作，所以这不仅仅是对知识点的考察，也是对工作能力的考察。
 ## 重点：内存动态占用，Catalyst，优化方法
 ## 任务执行流程
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%9B%BE.png#" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%9B%BE.png#" width="400"></div>
 Spark 任务的提交和执行离不开和资源管理器的交互，此处抽象了资源管理器，没有区分 on Standalone 还是 on Yarn，因为调度架构是类似的。（Yarn 相关任务处理流程后续会有专门章节说明）。
 
 1. Client 客户端提交运行 Spark Application 应用，应用中创建 SparkContext，由它负责与 ClusterManager（资源管理中心） 通信，进行 Executor 资源的申请。
@@ -24,7 +24,7 @@ Spark On Yarn 是用得最多的部署方式，所以这里再简单提一下。
 ## 内存管理机制
 
 这里只讲 Spark.2+ 版本默认的统一内存管理方式下的内存分配情况。Spark 的内存分为堆内和堆外内存。 堆内内存的划分和管理？
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Spark%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6%E5%9B%BE.png" width="400"></div>
 
 ### 堆内内存分为以下四个部分 Execution 执行内存：
 主要用于存放 Shuffle、Join、Sort、Aggregation 等计算过程中的临时数据； Storage 存储内存：主要用于存储 Spark 的** Cache 数据**，全局变量、静态变量，例如 RDD 的缓存、unroll 数据；
@@ -76,7 +76,7 @@ System Memory 系统总内存 spark.memory.fraction：执行内存和存储内�
 DataFrame 是基于 SparkSQL 构建的数据结构，DataFrame 和 RDD 类似，也是不可变的分布式弹性数据集，在此基础上 DataFrame 增加了数据的 schema 信息，也就是说 DataFrame 的每一列是有名称和类型的，类似于关系型数据库的表结构。SparkSQL 的执行本质上就是把 SQL 语句转化 Compute Func 算子并在 RDD 上进行相关的操作。
 ### Catalyst 工作流程
 Catalyst 优化器是 SparkSQL 的核心，我们直接来看看它的工作流程。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Catalyst%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Catalyst%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E5%9B%BE.png" width="400"></div>
 
 
 1. Parser

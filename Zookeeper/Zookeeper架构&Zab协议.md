@@ -6,7 +6,7 @@
 
 Zookeeper 顾名思义，动物园管理员，但是这个管理员也有不同的角色，普通管理员（Follower），代理队长（Leader），编外人员（Observer），在代理队长请假的情况下，所有的普通管理员都有资格参选队长，他们采用投票的方式来选举。小动物们（Client）有提需求（写数据）和取餐（读数据）的权利，队长和管理员都能处理取餐请求，但是提需求需要统一告诉队长让队长确认。另外出了个状况，人手不足，于是找来了编外人员，编外人员没有选举和参选权利，只能负责处理各种请求。这就是 Zookeeper 运营动物园的方式。 
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Zookeeper%E6%9E%B6%E6%9E%84%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Zookeeper%E6%9E%B6%E6%9E%84%E5%9B%BE.png" width="400"></div>
 
 - Client: Client 端的工作比较简单，就是一个请求的发起方，请求的对象可以是上图中Z ookeeper 的任意 Server 角色
 - Leader: Leader 负责更新系统的状态，负责惊醒投票的发起和决议。还有处理事务请求，从图中可以看出，Client 端发起的请求，最终都是由其他角色转发给 Leader 来处理
@@ -49,7 +49,7 @@ Leader 选举完成之后，如果集群中已有的过半的 Server 与该 Lead
 
 #### 选举的过程
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Zookeeper%E9%80%89%E4%B8%BE%E8%BF%87%E7%A8%8B.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Zookeeper%E9%80%89%E4%B8%BE%E8%BF%87%E7%A8%8B.png" width="400"></div>
 
 **发送和接收选票**：每个节点在初始状态下都会把自己的(myid,zxid)发送给其他所有节点，同时接收其他节点发来的选票并判断选票是否有效。 选票判断：
 

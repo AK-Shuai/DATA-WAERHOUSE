@@ -1,5 +1,5 @@
 ## Hive表的存储格式
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Hive%E5%8E%8B%E7%BC%A9%E6%A0%BC%E5%BC%8F.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Hive%E5%8E%8B%E7%BC%A9%E6%A0%BC%E5%BC%8F.png" width="400"></div>
 Hive支持的表类型，或者称为存储格式有：TextFile、SequenceFile、RCFile、ORC、Parquet、AVRO。  
 
 ### RCFile、ORC、Parquet  

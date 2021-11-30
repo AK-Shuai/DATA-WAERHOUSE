@@ -1,6 +1,6 @@
 # Hive 的架构
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Hive%E6%9E%B6%E6%9E%84%E5%9B%BE.png" width="400"></div> 
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Hive%E6%9E%B6%E6%9E%84%E5%9B%BE.png" width="400"></div> 
 
 ## 客户端任务提交的方式
 ### Hive 客户端任务提交的方式主要有两种：
@@ -47,7 +47,7 @@ JOIN 从原理上来划分的话，可分为 Reduce 端的 JOIN 和 Map 端的 J
 MapJoin 通常用于一个小表（hive.mapjoin.smalltable.filesize 配置，默认 25M）和一个大表进行 JOIN 的场景，没有 Reduce 阶段，所以能有效提高执行的效率。
 
 如图所示，会生成两个 Task，首先会启动一个任务扫描小表 tb_small，生成 HashTable 的数据结构文件，然后加载进分布式缓存 DistributeCache 中，第二个 Task 会扫描大表 tb_big，然后根据 tb_big 每一条数据中的关联字段去和 DistributeCache 中的 tb_small 表对应的 HashTable 做关联，并直接输出结果，因为没有 Reduce 阶段，所以输出的文件个数和 Mapper 的个数一致。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Mapjoin%E5%8E%9F%E7%90%86%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Mapjoin%E5%8E%9F%E7%90%86%E5%9B%BE.png" width="400"></div>
 
 ## Hive 的存储格式
 - TextFile：默认的存储格式，每一行都是一条记录，每行都以换行符（\n）结尾。数据不做压缩，磁盘开销大，数据解析开销大。可结合 Gzip、Bzip2 使用（系统自动检查，执行查询时自动解压）。

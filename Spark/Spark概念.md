@@ -3,7 +3,7 @@ Spark 在实现上和 MapReduce 计算框架类似，但是它在内存的使用
 ### 重点：shuffle，checkpoint，RDD
 ## Spark 的重要概念
 为了便于理解，讲概念之前我们结合下图一个最简单的 wordcount 的实例来说说 Spark 的数据处理流程。首先 Spark 从 HDFS 读 log.txt 文件，log.txt 存储在 HDFS 中被分成了三个块，Spark 会起了三个 Task 去读每个 Block 的数据，读到数据后 Spark 会按照算子的逻辑在 Task 内对每一条数据做相关操作（如图的 flatMap 和 map），如果遇到 shuffle 类算子（如图的 reduceByKey），会把数据打散，然后相同 key 的数据汇聚到同一个节点做聚合，另外下游 Stage 的计算会在上游 Stage 所有 Task 都完成之后。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070006.png" width="400"></div>  
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070006.png" width="400"></div>  
 
 - RDD 即弹性分布式数据集，Spark 中最基本的数据抽象，如图 Spark 从 HDFS 读取数据会将数据转化为 RDD，在 Spark 通过算子（fllatMap/map 等）计算后会把一个 RDD 转化为另一个 RDD 而不是直接在原有 RDD 上更新。
 - Partition 即分区，它是 Spark 中最小的执行单元。RDD 数据分布在各个节点，每一个节点的数据集即可理解为一个分区。如图 Partition1-Partition3。
@@ -24,7 +24,7 @@ Spark 在实现上和 MapReduce 计算框架类似，但是它在内存的使用
 - CheckPoint 可以解决 DAG 中 Lineage 过长或者宽依赖父 RDD 多导致重构 RDD 开销大的问题，它主要是可以把 RDD 写入磁盘，相当于将依赖关系截断后落盘，如果后面的 RDD 出现故障只需要从 CheckPoint 落盘的位置开始重构 RDD 即可，减小了资源消耗。
 ## Shuffle
 Shuffle 这块内容在面试中很重要，是考核对 Spark 原理理解的一个重要知识点，所以我们用放大镜把上图中的“shuffle”这块内容放大，得到了下面这张图。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070008.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070008.png" width="400"></div>
 Shuffle 是为了满足让不同分区的数据能够聚合在一起计算的需求，而对数据打散重新分区组合的操作。Shuffle 过程分为 shuffle write 和 shuffle read 两个阶段，（这里只讲 Sorted-Based Shuffle）。  
 
 - Write 阶段会把 Mapper 中每个 MapTask 所有的输出数据排好序，然后写到一个 Data 文件中，同时还会写一份 index 文件用于记录 Data 文件内部分区数据的元数据（即记录哪一段数据是输出给哪个 ReduceTask 的），所以 Mapper 中的每一个 MapTask 会产生两个文件 。
@@ -54,12 +54,12 @@ def ``coalesce``(numPartitions: ``Int, ``shuffle: ``Boolean ``= ``false, partiti
     - 每个 Task 负责读取上游的一个分区，一个分区读取结束后才读取下一个分区。如图中实线箭头所示，任务开始时每个 Task 对应一个分区来拉取数据；当某个 Task 完成了一个分区的数据读取后，才会开始读另一个分区的数据，即如图中虚线箭头所示。
     - Task 默认 Hash 分区，将数据求 Hash 值后写入下游的两个 Partition 中。
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070008.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070008.png" width="400"></div>
 
 - coalesce
     - coalesce 默认没有 Shuffle，RDD 之间是窄依赖关系，所以 Task 和下游 Partition 一一对应，每个 Task 只写一个 Partition，当并行度小于下游分区数的场景下（如图），则存在 Executor 的 Task 空跑的情况。造成了资源浪费。
     - Task 读数据同样是一个分区一个分区读，但是由于下游分区数量只有两个，整个计算的过程为窄依赖关系，所以一次只会读两个上游的分区写到下游。
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070010.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070010.png" width="400"></div>
 上面的两种方式实际上都各有各的缺点，repartition 会带来 Shuffle，那么就意味着需要进行额外的网络 IO；coalesce 虽然没有 Shuffle，但是会存在 Executor 空跑，资源浪费的情况。那么如何做选择，这其实是在两者找平衡点的一个过程，可参考下述方法。  
 
 - Spark 的并行度（即图中 Task 的数量）大于下游 Partition 的数量则可以用 coalesce，不会造成 Executor 的空跑。
@@ -68,7 +68,7 @@ def ``coalesce``(numPartitions: ``Int, ``shuffle: ``Boolean ``= ``false, partiti
 
 不经过 shuffle，是无法增加 RDD 的分区数的，因为窄依赖关系的分区数据计算流程一定是在同一台服务器完成的，一个分区通过 RDD 的 Transformation 算子计算后生成对应的另一个分区，如果多了一个分区那么数据就需要通过网络传输才能到达这个多出来的分区，违背了窄依赖的计算原则。所以上游 Partition 数量 < 下游 Partition 数量的场景，只能通过 shuffle 计算实现（repartition）。 
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070013.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070013.png" width="400"></div>
 groupByKey 和 reduceByKey 的区别
 
 按照和上面一样的套路，我们来看看这两个算子的源码。 def reduceByKey(func: (V, V) => V, numPartitions: Int): RDD[(K, V)] = self.withScope {   reduceByKey(new HashPartitioner(numPartitions), func) }
@@ -76,11 +76,11 @@ groupByKey 和 reduceByKey 的区别
 def groupByKey(partitioner: Partitioner): RDD[(K, Iterable[V])] = self.withScope { …… }
 
 如源码所示，reduceByKey 可以接收一个 func 函数作为参数，这个函数会作用到每个分区的数据上，即分区内部的数据先进行一轮计算，然后才进行 shuffle 将数据写入下游分区，再将这个函数作用到下游的分区上，这样做的目的是减少 shuffle 的数据量，减轻负担。 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070014.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070014.png" width="400"></div>
 
 groupByKey 不接收函数，Shuffle 过程所有的数据都会参加，从上游拉去全量数据根据 Key 进行分组写入下游分区，这样会消耗比较多的资源，数据传输会导致任务处理的延迟。 
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070015.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/2020-06-11-070015.png" width="400"></div>
 
 Cache、Persist、CheckPoint 的区别？ 先来说说 Cache 和 Persist ， 首先如果用了上面的方式看了源码就能够发现，Persist 的 MEMORY_ONLY 级别的存储等于 Cache，Persist 其他的配置只是存储的方式不同，作用和原理是和 Cache 类似的，所以这两个的特性放在一块说。CheckPoint 和这两个差别就比较大了。
 

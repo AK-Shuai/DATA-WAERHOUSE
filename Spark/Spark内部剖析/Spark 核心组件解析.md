@@ -9,7 +9,7 @@ Driver 上有 BlockManagerMaster，负责对各个节点上的 BlockManager 内�
 每个节点都有一个 BlockManager，每个 BlockManager 创建之后，第一件事即使去向 BlockManagerMaster 进行注册，此时 BlockManagerMaster 会为其长难句对应的 BlockManagerInfo。
 
 BlockManager 运行原理如下图所示：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/BlockManager%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86%E5%A6%82%E4%B8%8B%E5%9B%BE%E6%89%80%E7%A4%BA.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/BlockManager%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86%E5%A6%82%E4%B8%8B%E5%9B%BE%E6%89%80%E7%A4%BA.jpg" width="400"></div>
 
 BlockManagerMaster 与 BlockManager 的关系非常像 NameNode 与 DataNode 的关系，BlockManagerMaster 中保存中 BlockManager 内部管理数据的元数据，进行维护，当 BlockManager 进行 Block 增删改等操作时，都会在 BlockManagerMaster 中进行元数据的变更，这与 NameNode 维护 DataNode 的元数据信息，DataNode 中数据发生变化时 NameNode 中的元数据信息也会相应变化是一致的。
 
@@ -41,9 +41,9 @@ Spark 为此提供了两种共享变量，一种是 Broadcast Variable（广播�
 
 每个 task 都会保存一份它所使用的外部变量的副本，当一个 Executor 上的多个 task 都使用一个大型外部变量时，对于 Executor 内存的消耗是非常大的，因此，我们可以将大型外部变量封装为广播变量，此时一个 Executor 保存一个变量副本，此 Executor 上的所有 task 共用此变量，不再是一个 task 单独保存一个副本，这在一定程度上降低了 Spark 任务的内存占用。
 task 使用外部变量：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/task%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/task%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F.jpg" width="400"></div>
 使用广播变量：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/task%E4%BD%BF%E7%94%A8%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/task%E4%BD%BF%E7%94%A8%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.jpg" width="400"></div>
 
 Spark 还尝试使用高效的广播算法分发广播变量，以降低通信成本。
 
@@ -52,10 +52,10 @@ Spark 提供的 Broadcast Variable 是只读的，并且在每个 Executor 上�
 可以通过调用 SparkContext 的 broadcast()方法来针对每个变量创建广播变量。然后在算子的函数内，使用到广播变量时，每个 Executor 只会拷贝一份副本了，每个 task 可以使用广播变量的 value()方法获取值。
 
 在任务运行时，Executor 并不获取广播变量，当 task 执行到 使用广播变量的代码时，会向 Executor 的内存中请求广播变量，如下图所示：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Executor%E7%9A%84%E5%86%85%E5%AD%98%E4%B8%AD%E8%AF%B7%E6%B1%82%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Executor%E7%9A%84%E5%86%85%E5%AD%98%E4%B8%AD%E8%AF%B7%E6%B1%82%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.jpg" width="400"></div>
 之后 Executor 会通过 BlockManager 向 Driver 拉取广播变量，然后提供给 task 进行使用，如下图所示：
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Executor%E5%90%91Driver%E6%8B%89%E5%8F%96%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Executor%E5%90%91Driver%E6%8B%89%E5%8F%96%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.jpg" width="400"></div>
 
 广播大变量是 Spark 中常用的基础优化方法，通过减少内存占用实现任务执行性能的提升。
 
@@ -68,4 +68,4 @@ Accumulator 是存在于 Driver 端的，集群上运行的 task 进行 Accumula
 Spark 提供的 Accumulator 主要用于多个节点对一个变量进行共享性的操作。Accumulator 只提供了累加的功能，但是却给我们提供了多个 task 对于同一个变量并行操作的功能，但是 task 只能对 Accumulator 进行累加操作，不能读取它的值，只有 Driver 程序可以读取 Accumulator 的值。
 
 Accumulator 的底层原理如下图所示：
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Accumulator%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86.jpg" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/Accumulator%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86.jpg" width="400"></div>

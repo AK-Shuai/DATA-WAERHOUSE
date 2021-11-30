@@ -16,7 +16,7 @@ CAP 理论告诉我们一个真理，“没有最完美的系统，只有最合�
 - AP：放弃强一致性，追求分区容错性和可用性。这里说的放弃不是指不需要一致性，而是这个一致性可以是弱一致或者最终一致，比如分布式场景中常见的投票问题，半数以上同意即可 commit，这里就是先保证半数以上的节点一致，让结果可用，然后剩下的节点最终一致即可。
 - CP：放弃可用性，追求强一致性和分区容错性。适用于分布式场景下对一致性要求高的场景，比如分布式锁的应用场景，每个节点获取到的锁状态必须是一致的，不然这个锁毫无意义。
 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/CAP%E7%90%86%E8%AE%BA%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/CAP%E7%90%86%E8%AE%BA%E5%9B%BE.png" width="400"></div>
 
 根据定理，我们知道 CAP 三个特性只能三选二，但是如果我们放弃了分区容错性就是上述 CA 的单机场景，而不是我们讨论的分布式场景了，所以对于分布式系统而言，网络问题是一个必定会出现的异常情况，因此分区容错性也就成为了一个分布式系统必然需要面对和解决的问题，即如何保证单台节点宕机失联的情况下不影响整个集群的正常运行，所以 Partition Tolerance 是必须的，我们只能基于“P”来选择“C”、“A”了。
 

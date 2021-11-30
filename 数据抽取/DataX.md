@@ -1,5 +1,5 @@
 # DAtaX 工作原理
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/DataX%E5%8E%9F%E7%90%86%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/DataX%E5%8E%9F%E7%90%86%E5%9B%BE.png" width="400"></div>
 
 ## DataX 概念
 - Job：job是DataX 用以描述从一个源头到一个目的端的同步作业，是 DataX 数据同步的最小业务单元。比如：从一张 MySQL 的表同步到 Hive 的一个表的特定分区。 
@@ -43,7 +43,7 @@ Job 和 Task 是 DataX 两种维度的抽象。
 - com.alibaba.datax.core.Engine
 
 在 IDEA 中配置如下： 
-<div align=center><img src="https://raw.githubusercontent.com/shuainuo/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/DataX_java%E9%85%8D%E7%BD%AE%E5%9B%BE.png" width="400"></div>
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/DataX_java%E9%85%8D%E7%BD%AE%E5%9B%BE.png" width="400"></div>
 
 ## Datax工作流程
 https://gitee.com/Liuashuai/data-warehouse/blob/master/%E6%95%B0%E6%8D%AE%E6%8A%BD%E5%8F%96/DataX%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90.md
