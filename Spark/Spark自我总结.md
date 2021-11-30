@@ -100,3 +100,6 @@ RDD提供了一种高度受限的共享内存模型，即RDD是只读的记录�
 ### 常规容错机制
 数据检查点[checkpoint]每次都有一个拷贝 IO开销大 网络带宽是分布式的瓶颈
 记录数据的更新 每次数据变化都记录一下
+
+## 参考
+<a href="http://www.voycn.com/article/spark-dagdeshengchenghehuafenstage" target="_blank">DAG宽窄依赖讲解</a>
