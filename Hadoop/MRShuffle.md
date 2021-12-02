@@ -56,7 +56,7 @@ Hadoop的核心思想是MapReduce，但shuffle又是MapReduce的核心。shuffle
 - mapreduce是全局有序。单个文件有序，不代表全局有序，只有把小文件合并一起排序才会全局有序。
 
 **Map端shuffle**
-- 分区partition
+- 分区partition 主要为了reduce负载均衡
 - 写入环形内存缓冲区
 - 执行溢出写
 - 归并merge
