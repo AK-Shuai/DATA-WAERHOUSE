@@ -54,3 +54,24 @@ Hadoop的核心思想是MapReduce，但shuffle又是MapReduce的核心。shuffle
 - 任务去读取文件的数增多，打开的文件句柄数也会增多。
 - mapreduce是全局有序。单个文件有序，不代表全局有序，只有把小文件合并一起排序才会全局有序。
 
+**Map端shuffle**
+- 分区partition
+- 写入环形内存缓冲区
+- 执行溢出写
+- 归并merge
+
+**Reduce端shuffle**
+- 复制copy
+- 归并merge
+- reduce排序sort--->合并combiner--->生成溢出写文件
+
+**合并Combiner如果指定了Combiner，可能在两个地方被调用** ： 
+1. 当为作业设置Combiner类后，缓存溢出线程将缓存存放到磁盘时，就会调用； 
+2. 缓存溢出的数量超过mapreduce.map.combine.minspills（默认3）时，在缓存溢出文件合并的时候会调用
+
+**合并（Combine）和归并（Merge）的区别**：
+两个键值对<“a”,1>和<“a”,1>，如果合并，会得到<“a”,2>，如果归并，会得到<“a”,<1,1>>
+
+
+## 参考
+1. <a href="https://blog.csdn.net/qq_15074737/article/details/83790466?utm_source=app&app_version=4.19.1&code=app_1562916241&uLinkId=usr1mkqgl919blen" target="_blank">MRshuffle详细全过程</a>
