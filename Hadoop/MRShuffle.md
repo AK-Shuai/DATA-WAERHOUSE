@@ -2,6 +2,7 @@
 - [Map端的shuffle](#Map端的shuffle)
 - [Reduce端的shuffle](#Reduce端的shuffle)
 - [常见问题](#常见问题)
+- [参考](#参考)
 
 # MapReduce Shuffle 
 
