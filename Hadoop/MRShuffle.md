@@ -73,6 +73,9 @@ Hadoop的核心思想是MapReduce，但shuffle又是MapReduce的核心。shuffle
 **合并（Combine）和归并（Merge）的区别**：
 两个键值对<“a”,1>和<“a”,1>，如果合并，会得到<“a”,2>，如果归并，会得到<“a”,<1,1>>
 
+**Shuffer过程中的排序算法了解吗**
+快排
+
 
 ## 参考
 1. <a href="https://blog.csdn.net/qq_15074737/article/details/83790466?utm_source=app&app_version=4.19.1&code=app_1562916241&uLinkId=usr1mkqgl919blen" target="_blank">MRshuffle详细全过程</a>
