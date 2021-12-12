@@ -1,3 +1,8 @@
+- [Hive MR内容](#Hive-MR)
+- [Hive On Tez](#Hive-On-Tez)
+- [Hive On Spark](#Hive-On-Spark)
+- [参考](#参考)
+
 # Hive 引擎介绍
 hadoop 的基本架构中的计算框架是map-reduce，简称MR，而Hive是基于hadoop的，所以Hive的默认引擎也是MR。 MR的速度确实非常感人的慢，随着计算引擎的更新，目前主要是Tez和Spark。那么这3个计算引擎的区别是什么
 
