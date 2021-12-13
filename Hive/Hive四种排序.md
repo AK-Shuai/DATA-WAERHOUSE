@@ -1,5 +1,5 @@
 # Hive 四种排序方式
-select语法中的order by、sort by、distribute by、cluster by、order by语法。
+select语法中的order by、sort by、distribute by、cluster by语法。
 
 ## order by语法
 
