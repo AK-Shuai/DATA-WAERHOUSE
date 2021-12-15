@@ -1,3 +1,8 @@
+- [Kafka 的消息投递语义](#Kafka-的消息投递语义)
+- [Kafka 的事务保证](#Kafka-的事务保证)
+- [Consumer rebalance 算法](#Consumer-rebalance-算法)
+- [参数调优需要关注的配置](#参数调优需要关注的配置)
+
 # kafka 事务机制与系统优化
 我们了解到 Kafka 通过 ISR 机制平衡了各个 Partition 之间的可用性和一致性，通过顺序读写/PageCache/零拷贝保证了 Kafka 的高性能。  
 Kafka 还有一块非常重要的内容 —— 消息投递语义，这块内容和流式计算息息相关，解决的消费数据的唯一性的问题。
