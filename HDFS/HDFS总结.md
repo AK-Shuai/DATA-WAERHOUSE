@@ -34,6 +34,23 @@ HDFS客户端 调用API DistributedFileSystem 使用RPC电泳Name Node 文件系
 4. 多副本机制
 5. 数据校验机制 checknums 单位512字节
 
-**短路读机制**：
-HDFS 采用 Unix 的机制，DFS Client 发起读请求后 Data Node 返回的是文件描述等信息，DFS Client 直接本机读取
+**短路读机制**：  
+HDFS 采用 Unix 的机制，DFS Client 发起读请求后 Data Node 返回的是文件描述等信息，DFS Client 直接本机读取。
+
+元数据文件大小：150byte。
+
+**机架感知**：
+首选 client 机器，次选随机选择。
+
+不同机架，不同机房。
+
+随机选择规则：  
+1. 给定存储类型
+2. 不能知识读的
+3. 不能是坏的
+4. 必须在线
+5. 最近更新过心跳
+6. 存储够的
+7. I/O不忙的
+8. 同机架最大副本数限制
 
