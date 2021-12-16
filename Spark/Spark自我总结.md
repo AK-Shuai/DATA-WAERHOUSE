@@ -2,7 +2,7 @@
 
 ## 自我知识链接
 
-**Spark Yarn**
+**Spark Yarn**：  
 在启动小组长之后 启动 Driver 初始化 Spark Context 同时初始化 DAG Scheduler、 Task Scheduler、 SchedulerBackend 以及 Heartbeat Receiver。
 1. 一个action启动一个job
 2. 一个job分配 DAG Scheduler 做图，回溯算法，根据 shuffle 算出宽窄依赖关系
@@ -19,7 +19,7 @@
 task 失败重试机制：  
 失败的 Task 会记录 Host 和 executor id，下次执行不会用到这个机器下这个容器执行了。
 
-**Spark Shuffle**
+**Spark Shuffle**：  
 Hash Shuffle优化和为优化、Sort Shuffle 普通机制和bypass机制
 
 Sort Shuffle 启动 bypass 机制
@@ -37,7 +37,7 @@ Hash Shuffle 减少机制原理：
 
 废弃 Hash Shuffle 主要原因是产生文件数不可控，在内存不足使用磁盘时有可能导致巨多文件，寻址时间过长，下面会写内存不够情况。
 
-**堆内内存和堆外内存占用**：
+**堆内内存和堆外内存占用**：  
 在内存动态占用中计算内存被存储内存占用只能等待释放，而存储内存被占用是可以落盘的。
 
 
