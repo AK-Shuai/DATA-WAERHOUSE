@@ -18,7 +18,7 @@ HDFS客户端 调用API DistributedFileSystem 使用RPC访问Name Node 让文件
 4. 备份数不足，Name Node 找到新节点继续写入
 
 **读流程**：
-HDFS客户端 调用API DistributedFileSystem 使用RPC电泳Name Node 文件系统让文件系统namespace获取元数据信息 返回 DFSInputStream 这个对象带着元数据存储位置 负责访问校验 客户端调用close关闭
+HDFS客户端 调用API DistributedFileSystem 使用RPC访问 Name Node 文件系统让文件系统namespace获取元数据信息 返回 DFSInputStream 这个对象带着元数据存储位置 负责访问校验 客户端调用close关闭
 
 读写最大区别是 访问 Name Node 文件系统是creat还是get 
 
