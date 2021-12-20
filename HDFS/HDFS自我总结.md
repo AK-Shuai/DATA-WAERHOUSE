@@ -28,7 +28,7 @@ HDFS客户端 调用API DistributedFileSystem 使用RPC访问 Name Node 文件�
 5. 数据校验机制 checknums 单位512字节
 
 **短路读机制**：  
-HDFS 采用 Unix 的机制，DFS Client 发起读请求后 Data Node 返回的是文件描述等信息，DFS Client 直接本机读取。
+HDFS 采用 Unix 的机制，DFS Client 发起读请求返回的是 Data Node 的文件描述等信息，DFS Client 直接本机读取。
 
 元数据文件大小：150byte。
 
