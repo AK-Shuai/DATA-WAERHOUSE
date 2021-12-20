@@ -162,6 +162,7 @@ FROM my_table
 GROUP BY 1
 ```
 
+---
 ## Exceeded max memory 错误
 Presto会跟踪每个查询的内存使用情况.可用内存的多少是根据你的查询计划变动的,所以在大多数情况下可以从写查询语句来达到优化内存使用的目的.
 
@@ -230,6 +231,7 @@ WHERE large_table1.id = large_table.id
 ```
 核心点就是使用distributed join. Presto的这种配置类型会将左表和右表同时以join key的hash value为分区字段进行分区. 所以即使右表也是大表,也会被拆分.缺点是会增加很多网络数据传输, 所以会比broadcast join的效率慢.
 
+---
 ## 查询生成的大量数据优化的问题
 Presto用JOSN text的形式保存数据。如果查询出来的数据大于100G，Presto将传输大于100G的JSON text来保存查询结果。所以，即使查询处理即将完成，输出这么大的JOSN text也会消耗很长时间。
 
@@ -245,6 +247,7 @@ select a, b, c, d FROM my_table
 
 Note: 但是，如果使用了ORDER BY语句，这个魔术注释将被忽略。
 
+---
 ## 如何拼接字符串
 
 ### 用 || 运算符
@@ -252,6 +255,7 @@ Note: 但是，如果使用了ORDER BY语句，这个魔术注释将被忽略。
 SELECT 'hello ' || 'presto'
 ```
 
+---
 ## 如何在字段包含NULL的情况下 添加default value
 
 ### 用COALESCE(v1,v2,...)函数
@@ -260,6 +264,7 @@ SELECT 'hello ' || 'presto'
 SELECT COALESCE(name, 'N/A') FROM table1
 ```
 
+---
 ## 如何从两个数中选出最大或最小值
 
 ### 用greatest / least 函数
