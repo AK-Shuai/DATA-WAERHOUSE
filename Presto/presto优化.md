@@ -4,7 +4,8 @@
 - [Exceeded max memory 错误](#Exceeded-max-memory-错误)
 - [查询生成的大量数据优化的问题](#查询生成的大量数据优化的问题)
 - [如何拼接字符串](#如何拼接字符串)
-
+- [如何在字段包含NULL的情况下 添加default value](#如何在字段包含NULL的情况下-添加default-value)
+- [如何从两个数中选出最大或最小值](#如何从两个数中选出最大或最小值)
 
 # Presto性能优化
 
@@ -257,7 +258,7 @@ SELECT 'hello ' || 'presto'
 SELECT COALESCE(name, 'N/A') FROM table1
 ```
 
-## 如何从两个数中选出最大/最小值
+## 如何从两个数中选出最大或最小值
 
 ### 用greatest / least 函数
 ```sql
