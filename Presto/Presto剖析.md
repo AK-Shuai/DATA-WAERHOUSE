@@ -1,3 +1,11 @@
+- [概况](#概况)
+- [架构图](#架构图)
+- [数据模型](#数据模型)
+- [执行计划分析](#执行计划分析)
+- [内存管理分析](#内存管理分析)
+- [Presto底层数据拉取和运算的设计和实现](#Presto底层数据拉取和运算的设计和实现)
+- [参考](#参考)
+
 # Presto 剖析
 
 ## 概况
@@ -150,7 +158,8 @@ Presto是一款内存计算型的引擎，所以对于内存管理必须做到�
 Presto采用逻辑的内存池，来管理不同类型的内存需求。
 
 Presto把整个内存划分成三个内存池，分别是System Pool ,Reserved Pool, General Pool。
-<div align=center><img src="" width="400"></div>
+
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/presto%E5%86%85%E5%AD%98%E6%B1%A0.png" width="400"></div>
 
 1. System Pool 是用来保留给系统使用的，用于读写buffer,默认为40% JVM max memory * 0.4。的内存空间留给系统使用。
 2. Reserved Pool和General Pool 是用来分配query运行时内存的。
@@ -165,5 +174,45 @@ System Pool用于系统使用的内存，例如机器之间传递数据
 如果没有Reserved Pool， 那么当query非常多，并且把内存空间几乎快要占完的时候，某一个内存消耗比较大的query开始运行。但是这时候已经没有内存空间可供这个query运行了，这个query一直处于挂起状态，等待可用的内存。 但是其他的小内存query跑完后，又有新的小内存query加进来。由于小内存query占用内存小，很容易找到可用内存。 这种情况下，大内存query就一直挂起直到饿死。
 
 所以为了防止出现这种饿死的情况，必须预留出来一块空间，共大内存query运行。 预留的空间大小等于query允许使用的最大内存。Presto每秒钟，挑出来一个内存占用最大的query，允许它使用reserved pool，避免一直没有可用内存供该query运行。
+
+<div align=center><img src="https://raw.githubusercontent.com/AK-Shuai/DATA-WAERHOUSE/main/%E5%9B%BE%E5%BA%8A/presto%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86.png" width="400"></div>
+Presto内存管理，分两部分：
+
+1. query内存管理
+
+   - query划分成很多task， 每个task会有一个线程循环获取task的状态，包括task所用内存。汇总成query所用内存。
+   - 如果query的汇总内存超过一定大小，则强制终止该query。
+
+2. 机器内存管理：
+
+   - coordinator有一个线程，定时的轮训每台机器，查看当前的机器内存状态。
+
+当query内存和机器内存汇总之后，coordinator会挑选出一个内存使用最大的query，分配给Reserved Pool。
+
+内存管理是由coordinator来管理的， coordinator每秒钟做一次判断，指定某个query在所有的机器上都能使用reserved 内存。那么问题来了，如果某台机器上，，没有运行该query，那岂不是该机器预留的内存浪费了？为什么不在单台机器上挑出来一个最大的task执行。原因还是死锁，假如query，在其他机器上享有reserved内存，很快执行结束。但是在某一台机器上不是最大的task，一直得不到运行，导致该query无法结束。
+
+## Presto底层数据拉取和运算的设计和实现
+
+Presto在数据进行shuffle的时候，是Pull模式。
+在两端负责分发和交换数据的类分别是ExchangClient和OutputBuffer。
+
+Source Stage把数据从Connector中拉取出来，这时候需要给下一个FixedStage进行处理。
+他会先把数据放在OutputBuffer中，等待上游把数据请求过去，而上游请求数据的类就是ExchangeClient。
+
+这在一定的程度上缓解了请求的压力，同时为节约了下游的cpu资源。因为如果那台服务器挂了，那么一直无意义的http请求是毫无意义的，还会一直浪费cpu资源。
+
+BroadcastOutputBuffer和PartitionedOutputBuffer
+
+每来一个Page，把大小加进去，每出一个Page把大小减去，如果当前攒着的大小超过了阈值，那么就返回Blocked，把整个Driver给Block掉，不去执行了。
+
+partition的情形，因为每一个Page进来，只会分到指定的一个ClientBuffer中，移除的时候直接减去就行了。
+
+对于广播 定怎么知道已经被所有的Task取走了呢
+
+包装了一个PageReference类，传递进去原先的Page和一个回调，这个回调就是把当前的BufferSize减去CurPageSize。
+引用计数的实现，每add到Buffer中一次，计数就加一，每从buffer中移除一次，计数就减一，当为0的时候，就调用回调把size减去。
+
+## 参考
+1. <a href="https://blog.csdn.net/qq_22708467/article/details/115438229?utm_source=app&app_version=4.20.0&code=app_1562916241&uLinkId=usr1mkqgl919blen" target="_blank">Presto初步剖析</a>
 
 
