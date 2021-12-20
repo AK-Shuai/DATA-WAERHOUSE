@@ -140,3 +140,30 @@ TaskExecutor对象通过构造函数并以线程池方式添加计算任务，�
 释放算子Operator不用的内存资源，同时根据条件进行磁盘溢写操作；更新Driver的数据源split列表信息,TaskRunner线程对象会依次处理Split/Driver队列中的任务直到队列为空，此时SqlTask对象的状态就会变为已完成状态,Driver 对象
 13. 将该Task对应的TaskSource列表存到SqlTaskExecution中同时更新此Task对应的Driver的数据源。同时将当前Task状态信息返回给Coordinator
 14. 在更新Task对应的数据源时，开始进行任务调度,SqlTaskExecution#schedulePartitionedSource,8~14发生在Worker节点
+
+
+## 内存管理分析
+Presto是一款内存计算型的引擎，所以对于内存管理必须做到精细，使用Slice进行内存操作，Slice使用Unsafe#copyMemory实现了高效的内存拷贝。
+
+### 内存池
+
+Presto采用逻辑的内存池，来管理不同类型的内存需求。
+
+Presto把整个内存划分成三个内存池，分别是System Pool ,Reserved Pool, General Pool。
+<div align=center><img src="" width="400"></div>
+
+1. System Pool 是用来保留给系统使用的，用于读写buffer,默认为40% JVM max memory * 0.4。的内存空间留给系统使用。
+2. Reserved Pool和General Pool 是用来分配query运行时内存的。
+3. 其中大部分的query使用general Pool。 而最大的一个query，使用Reserved Pool， 所以Reserved Pool的空间等同于一个query在一个机器上运行使用的最大空间大小，默认是10%的空间JVM max memory * 0.1。
+4. General则享有除了System Pool和General Pool之外的其他内存空间。
+
+**为什么要使用内存池**：
+System Pool用于系统使用的内存，例如机器之间传递数据
+
+为什么需要保留区内存呢？并且保留区内存正好等于query在机器上使用的最大内存？
+
+如果没有Reserved Pool， 那么当query非常多，并且把内存空间几乎快要占完的时候，某一个内存消耗比较大的query开始运行。但是这时候已经没有内存空间可供这个query运行了，这个query一直处于挂起状态，等待可用的内存。 但是其他的小内存query跑完后，又有新的小内存query加进来。由于小内存query占用内存小，很容易找到可用内存。 这种情况下，大内存query就一直挂起直到饿死。
+
+所以为了防止出现这种饿死的情况，必须预留出来一块空间，共大内存query运行。 预留的空间大小等于query允许使用的最大内存。Presto每秒钟，挑出来一个内存占用最大的query，允许它使用reserved pool，避免一直没有可用内存供该query运行。
+
+
