@@ -69,6 +69,7 @@ WHERE
   regexp_like(method, 'GET|POST|PUT|DELETE')
 ```
 
+---
 ## 如何优化JOIN性能
 
 尽量让JOIN的条件简单，最好是ON后面的比较表达式两边必涉及计算。
@@ -108,6 +109,7 @@ JOIN b
 ON a.date = b.date
 ```
 
+---
 ## 如何使查询简单化
 ### 使用WITH语句
 如果你的查询语句非常复杂或者有多层嵌套的子查询，请试着用WITH语句将子查询分离出来。
