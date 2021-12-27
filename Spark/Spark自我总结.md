@@ -20,7 +20,7 @@ task 失败重试机制：
 失败的 Task 会记录 Host 和 executor id，下次执行不会用到这个机器下这个容器执行了。
 
 **Spark Shuffle**：  
-Hash Shuffle优化和为优化、Sort Shuffle 普通机制和bypass机制
+Hash Shuffle优化和未优化、Sort Shuffle 普通机制和bypass机制
 
 Sort Shuffle 启动 bypass 机制
 1. maptask 数量小于 bypass merge 参数值
