@@ -94,5 +94,7 @@ Spark 有三套 API RDD（2011）、DataFrame（2013）、DataSet（2015）
 5. DataFrame转成RDD会不会有性能的消耗
     - 由df转成rdd，df.rdd的过程会有一个反序列化的过程，会造成一定的内存消耗。
 
+6. 执行引擎的区别
+    - RDD API的执行引擎是Spark Core，其Spark Core的本质是负责任务的调度、计算、及存储;DF API优化引擎是SparkSQL，包括Catalyst执行过程优化和Tungsten数据结构优化。
 ## 参考
 1. <a href="https://www.cnblogs.com/mr-bigdata/p/14426049.html#rdddataframedataset%E4%BB%8B%E7%BB%8D" target="_blank">Spark RDD、DF、DS的区别</a>
