@@ -4,6 +4,7 @@ Spark 有三套 API RDD（2011）、DataFrame（2013）、DataSet（2015）
 
 - [RDD](#RDD)
     - [RDD的概念](#RDD的概念)
+    - [RDD的优点](#RDD的优点)
     - [RDD的短板](#RDD的短板)
 - [DataFrame](#DataFrame)
     - [DataFrame概念](#DataFrame概念)
@@ -23,6 +24,10 @@ Spark 有三套 API RDD（2011）、DataFrame（2013）、DataSet（2015）
 - RDD所描述的数据分布在集群的各个节点中，基于RDD提供了很多的转换的并行处理操作。
 - RDD具备容错性，在任何节点上出现了故障，RDD是能够进行容错恢复的。
 - RDD专注的是How！就是如何处理数据，都由我们自己来去各种算子来实现。
+
+### RDD的优点
+- 编译时类型安全，编译时就能检查出类型错误。
+- 面向对象的编程风格，直接通过对象调用方法的形式来操作数据。
 
 ### RDD的短板
 - 集群间通信都需要将JVM中的对象进行序列化和反序列化，RDD开销较大
@@ -82,6 +87,9 @@ Spark 有三套 API RDD（2011）、DataFrame（2013）、DataSet（2015）
 
     - RDD的操作都是最底层的，Spark不会做任何的优化。是low level的API，无法执行schema的高阶声明式操作
     - DataSet支持很多类似于RDD的功能函数，而且支持DataFrame的所有操作。其实我们前面看到了DataFrame就是一种特殊的、能力稍微弱一点的DataSet。DataSet是一种High Level的API，在效率上比RDD有很大的提升。
+
+4. 为什么使用 DataFrame
+    - 因为我们使用 python 不知道类型安全，所以基于 DataFrame API 开发的。
 
 ## 参考
 1. <a href="https://www.cnblogs.com/mr-bigdata/p/14426049.html#rdddataframedataset%E4%BB%8B%E7%BB%8D" target="_blank">Spark RDD、DF、DS的区别</a>
