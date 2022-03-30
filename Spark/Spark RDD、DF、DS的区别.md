@@ -91,5 +91,8 @@ Spark 有三套 API RDD（2011）、DataFrame（2013）、DataSet（2015）
 4. 为什么使用 DataFrame
     - 因为我们使用 python 不知道类型安全，所以基于 DataFrame API 开发的。
 
+5. DataFrame转成RDD会不会有性能的消耗
+    - 由df转成rdd，df.rdd的过程会有一个反序列化的过程，会造成一定的内存消耗。
+
 ## 参考
 1. <a href="https://www.cnblogs.com/mr-bigdata/p/14426049.html#rdddataframedataset%E4%BB%8B%E7%BB%8D" target="_blank">Spark RDD、DF、DS的区别</a>
