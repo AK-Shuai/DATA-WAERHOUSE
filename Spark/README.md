@@ -7,6 +7,7 @@
 4. <a href="https://github.com/AK-Shuai/DATA-WAERHOUSE/tree/main/Spark/Spark%20%E8%B0%83%E4%BC%98%E6%8A%80%E5%B7%A7" target="_blank">Spark调优基础</a>
 5. <a href="https://github.com/AK-Shuai/DATA-WAERHOUSE/blob/main/Spark/Spark%E7%9A%84%E4%B8%A4%E7%A7%8DShuffle%E8%A7%A3%E6%9E%90.md" target="_blank">HashShuffle和SortShuffle区别</a>
 6. <a href="https://github.com/AK-Shuai/DATA-WAERHOUSE/blob/main/Spark/Spark%20RDD%E3%80%81DF%E3%80%81DS%E7%9A%84%E5%8C%BA%E5%88%AB.md" target="_blank">Spark RDD、DF、DS的区别</a>
+7. <a href="https://github.com/AK-Shuai/DATA-WAERHOUSE/blob/main/Spark/Spark%20API%E7%AE%97%E5%AD%90.md" target="_blank">Spark API算子</a>
 
 ## Spark 函数知识
 1. <a href="https://github.com/AK-Shuai/DATA-WAERHOUSE/blob/main/Spark/Spark%E6%8C%81%E4%B9%85%E5%8C%96.md" target="_blank">Spark持久化</a>
