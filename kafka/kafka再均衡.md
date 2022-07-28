@@ -76,4 +76,4 @@ max.poll.interval.ms的设置，则主要和下游处理时间有关，例如下
 ## 参考
 1. <a href="https://juejin.cn/post/6876428477445177351#comment" target="_blank">Kafka中的再均衡</a>
 2. <a href="https://matt33.com/2017/01/16/kafka-group/#Consumer-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%97%B6-group-%E7%8A%B6%E6%80%81%E5%8F%98%E5%8C%96" target="_blank">Kafka之Group状态变化分析及Rebalance过程</a>
-
+3. <a href="https://blog.csdn.net/u011784767/article/details/78663168" target="_blank">消费位置</a>
